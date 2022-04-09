@@ -1,6 +1,6 @@
 package sub;
 
-public class Cell {
+public class Cell{
 
     private int positionX;
     private int positionY;
@@ -62,6 +62,13 @@ public class Cell {
 
     public Piece getPiece(){
         return piece;
+    }
+
+    // extra
+
+    public void print(){
+        String pieceString = getPiece() == null ? "NODATA" : getPiece().pieceToString();
+        System.out.println(getPositionX()+" "+getPositionY()+" "+pieceString);
     }
 
 }

@@ -1,6 +1,6 @@
 package sub;
 
-public class Piece {
+public class Piece{
 
     private String color;
     private String name;
@@ -34,6 +34,14 @@ public class Piece {
         return name;
     }
 
-    //
+    // extra
+
+    public void print(){
+        System.out.println(getName()+" "+getColor());
+    }
+
+    public String pieceToString(){
+        return getName()+" "+getColor();
+    }
 
 }
