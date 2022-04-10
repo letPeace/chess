@@ -5,7 +5,7 @@ public class Chessboard{
     private Cell[][] cells;
     private String white = "w";
     private String black = "b";
-    private final String rock = "R";
+    private final String rook = "R";
     private final String knight = "N";
     private final String bishop = "B";
     private final String queen = "Q";
@@ -39,7 +39,7 @@ public class Chessboard{
                     switch(j){
                         case(1):
                         case(8):
-                            pieceName = rock;
+                            pieceName = rook;
                             break;
                         case(2):
                         case(7):
@@ -80,80 +80,41 @@ public class Chessboard{
     private boolean isMoveAvailable(Cell cellFrom, Cell cellTo){
         Piece pieceFrom = cellFrom.getPiece();
         Piece pieceTo = cellTo.getPiece();
-        if(pieceFrom == null) return false;
-        if(pieceTo != null && pieceFrom.getColor() == pieceTo.getColor()) return false;
-        String name = pieceFrom.getName();
-        String color = pieceFrom.getColor();
-        boolean available = true;
-        switch(name){
-            case(pawn):
-                available = isMoveAvailablePawn(cellFrom, cellTo);
-                break;
-            case(rock):
-                available = isMoveAvailableRock(cellFrom, cellTo);
-                break;
-            case(knight):
-                available = isMoveAvailableKnight(cellFrom, cellTo);
-                break;
-            case(bishop):
-                available = isMoveAvailableBishop(cellFrom, cellTo);
-                break;
-            case(queen):
-                available = isMoveAvailableQueen(cellFrom, cellTo);
-                break;
-        }
-        return available;
-    }
-
-    private boolean isMoveAvailablePawn(Cell cellFrom, Cell cellTo){
+        if(pieceFrom == null) return false; // there is not any piece in this cell
+        if(pieceTo != null && pieceFrom.getColor().equals(pieceTo.getColor())) return false; // there is the same color piece in "cellTo" cell
+        String pieceFromName = pieceFrom.getName();
+        //
         int positionXFrom = cellFrom.getPositionX();
         int positionYFrom = cellFrom.getPositionY();
         String colorFrom = cellFrom.getPiece().getColor();
         int positionXTo = cellTo.getPositionX();
         int positionYTo = cellTo.getPositionY();
-        if(positionXFrom != positionXTo) return false; // no consider capturing another pawn
-        boolean whitePawnCanMove = colorFrom == white && (positionYFrom == 2 && (positionYTo - positionYFrom) == 2 || (positionYTo - positionYFrom) == 1);
-        boolean blackPawnCanMove = colorFrom == black && (positionYFrom == 7 && (positionYTo - positionYFrom) == -2 || (positionYTo - positionYFrom) == -1);
-        if(whitePawnCanMove || blackPawnCanMove) return true;
-        return false;
-    }
-
-    private boolean isMoveAvailableRock(Cell cellFrom, Cell cellTo){
-        int positionXFrom = cellFrom.getPositionX();
-        int positionYFrom = cellFrom.getPositionY();
-        int positionXTo = cellTo.getPositionX();
-        int positionYTo = cellTo.getPositionY();
-        if(positionXFrom == positionXTo || positionYFrom == positionYTo) return true;
-        return false;
-    }
-
-    private boolean isMoveAvailableKnight(Cell cellFrom, Cell cellTo){
-        int positionXFrom = cellFrom.getPositionX();
-        int positionYFrom = cellFrom.getPositionY();
-        int positionXTo = cellTo.getPositionX();
-        int positionYTo = cellTo.getPositionY();
-        if(Math.abs(positionXFrom - positionXTo) == 1 && Math.abs(positionYFrom - positionYTo) == 2 || Math.abs(positionXFrom - positionXTo) == 2 && Math.abs(positionYFrom - positionYTo) == 1) return true;
-        return false;
-    }
-
-    private boolean isMoveAvailableBishop(Cell cellFrom, Cell cellTo){
-        int positionXFrom = cellFrom.getPositionX();
-        int positionYFrom = cellFrom.getPositionY();
-        int positionXTo = cellTo.getPositionX();
-        int positionYTo = cellTo.getPositionY();
-        if(Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo)) return true;
-        return false;
-    }
-
-    private boolean isMoveAvailableQueen(Cell cellFrom, Cell cellTo){
-        int positionXFrom = cellFrom.getPositionX();
-        int positionYFrom = cellFrom.getPositionY();
-        int positionXTo = cellTo.getPositionX();
-        int positionYTo = cellTo.getPositionY();
-        boolean horizontal = positionXFrom == positionXTo;
-        boolean vertical = positionYFrom == positionYTo;
-        boolean diagonal = Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo);
-        if(horizontal || vertical || diagonal) return true;
+        switch(pieceFromName){
+            case(pawn):
+                if(positionXFrom != positionXTo) return false; // no consider capturing another pawn
+                boolean whitePawnCanMove = colorFrom.equals(white) && (positionYFrom == 2 && (positionYTo - positionYFrom) == 2 || (positionYTo - positionYFrom) == 1);
+                boolean blackPawnCanMove = colorFrom.equals(black) && (positionYFrom == 7 && (positionYTo - positionYFrom) == -2 || (positionYTo - positionYFrom) == -1);
+                if(whitePawnCanMove || blackPawnCanMove) return true;
+                break;
+            case(rook):
+                if(positionXFrom == positionXTo || positionYFrom == positionYTo) return true;
+                break;
+            case(knight):
+                if(Math.abs(positionXFrom - positionXTo) == 1 && Math.abs(positionYFrom - positionYTo) == 2 || Math.abs(positionXFrom - positionXTo) == 2 && Math.abs(positionYFrom - positionYTo) == 1) return true;
+                break;
+            case(bishop):
+                if(Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo)) return true;
+                break;
+            case(queen):
+                boolean horizontal = positionXFrom == positionXTo;
+                boolean vertical = positionYFrom == positionYTo;
+                boolean diagonal = Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo);
+                if(horizontal || vertical || diagonal) return true;
+                break;
+            case(king):
+                if(Math.abs(positionXFrom - positionXTo) <= 1 && Math.abs(positionYFrom - positionYTo) <= 1) return true;
+                break;
+        }
         return false;
     }
 

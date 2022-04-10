@@ -7,10 +7,54 @@ public class Chess{
         Chessboard chessboard = new Chessboard();
         chessboard.print();
 //        testPawn(chessboard);
-//        testRock(chessboard);
+//        testRook(chessboard);
 //        testKnight(chessboard);
 //        testBishop(chessboard);
 //        testQueen(chessboard);
+//        testKing(chessboard);
+    }
+
+    public static void testKing(Chessboard chessboard){
+        chessboard.getCell(5, 7).setPiece(null); // remove pawn
+        //
+        Cell cell = chessboard.getCell(5,8);
+        Cell cell2 = chessboard.getCell(5,7);
+        boolean move2 = chessboard.move(cell, cell2);
+        //
+        cell = cell2;
+        Cell cell3 = chessboard.getCell(6,6);
+        boolean move3 = chessboard.move(cell, cell3);
+        //
+        cell = cell3;
+        Cell cell4 = chessboard.getCell(6,5);
+        boolean move4 = chessboard.move(cell, cell4);
+        //
+        cell = cell4;
+        Cell cell5 = chessboard.getCell(5,4);
+        boolean move5 = chessboard.move(cell, cell5);
+        //
+        cell = cell5;
+        Cell cell6 = chessboard.getCell(4,4);
+        boolean move6 = chessboard.move(cell, cell6);
+        //
+        cell = cell6;
+        Cell cell7 = chessboard.getCell(3,5);
+        boolean move7 = chessboard.move(cell, cell7);
+        //
+        cell = cell7;
+        Cell cell8 = chessboard.getCell(4,6);
+        boolean move8 = chessboard.move(cell, cell8);
+        //
+        cell = cell8;
+        Cell cell9 = chessboard.getCell(5,6);
+        boolean move9 = chessboard.move(cell, cell9);
+        //
+        cell = cell9;
+        Cell cell10 = chessboard.getCell(5,7);
+        boolean move10 = chessboard.move(cell, cell10);
+
+        System.out.println("/move2 = "+move2+"/move3 = "+move3+"/move4 = "+move4+"/move5 = "+move5+"/move6 = "+move6+"/move7 = "+move7+"/move8 = "+move8+"/move9 = "+move9+"/move10 = "+move10);
+        chessboard.print();
     }
 
     public static void testQueen(Chessboard chessboard){
@@ -120,7 +164,7 @@ public class Chess{
         chessboard.print();
     }
 
-    public static void testRock(Chessboard chessboard){
+    public static void testRook(Chessboard chessboard){
         Cell cell = chessboard.getCell(1,1);
         Cell cell2 = chessboard.getCell(1,6);
         boolean move2 = chessboard.move(cell, cell2);
