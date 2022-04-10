@@ -1,27 +1,27 @@
 package sub;
 
-public class Cell{
+public class Square{
 
     private int positionX;
     private int positionY;
     private String color;
     private Piece piece;
 
-    public Cell(){
+    public Square(){
         //
     }
 
-    public Cell(Piece piece){
+    public Square(Piece piece){
         setPiece(piece);
     }
 
-    public Cell(int positionX, int positionY, String color){
+    public Square(int positionX, int positionY, String color){
         setPositionX(positionX);
         setPositionY(positionY);
         setColor(color);
     }
 
-    public Cell(int positionX, int positionY, String color, Piece piece){
+    public Square(int positionX, int positionY, String color, Piece piece){
         setPositionX(positionX);
         setPositionY(positionY);
         setColor(color);

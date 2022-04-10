@@ -2,7 +2,7 @@ package sub;
 
 public class Chessboard{
 
-    private Cell[][] cells;
+    private Square[][] cells;
     private final String white = "w";
     private final String black = "b";
     private final String rook = "R";
@@ -14,17 +14,17 @@ public class Chessboard{
     private final String nullName = "  ";
 
     public Chessboard(){
-        cells = new Cell[8][8];
+        cells = new Square[8][8];
         setCells();
     }
 
     // GET
 
-    public Cell[][] getCells(){
+    public Square[][] getCells(){
         return cells;
     }
 
-    public Cell getCell(int positionX, int positionY){
+    public Square getCell(int positionX, int positionY){
         if((positionX<=0 || positionX>=9) || (positionY<=0 || positionY>=9)) return null;
         return getCells()[positionY-1][positionX-1];
     }
@@ -63,21 +63,21 @@ public class Chessboard{
                 Piece piece = null;
                 if(i<=2) piece = new Piece(pieceName, white);
                 if(i>=7) piece = new Piece(pieceName, black);
-                cells[i-1][j-1] = new Cell(j, i, (i+j)%2==0?black:white, piece);
+                cells[i-1][j-1] = new Square(j, i, (i+j)%2==0?black:white, piece);
             }
         }
     }
 
     // move
 
-    public boolean move(Cell cellFrom, Cell cellTo){
+    public boolean move(Square cellFrom, Square cellTo){
         if(cellFrom == null || cellTo == null || !isMoveAvailable(cellFrom, cellTo) || !emptySquaresBetween(cellFrom, cellTo)) return false;
         cellTo.setPiece(cellFrom.getPiece());
         cellFrom.setPiece(null);
         return true;
     }
 
-    private boolean isMoveAvailable(Cell cellFrom, Cell cellTo){
+    private boolean isMoveAvailable(Square cellFrom, Square cellTo){
         Piece pieceFrom = cellFrom.getPiece();
         Piece pieceTo = cellTo.getPiece();
         if(pieceFrom == null) return false; // there is not any piece in this cell
@@ -120,9 +120,7 @@ public class Chessboard{
         return false;
     }
 
-    //
-
-    public boolean emptySquaresBetween(Cell cellFrom, Cell cellTo){
+    public boolean emptySquaresBetween(Square cellFrom, Square cellTo){
         int positionXFrom = cellFrom.getPositionX();
         int positionYFrom = cellFrom.getPositionY();
         int positionXTo = cellTo.getPositionX();
@@ -160,7 +158,7 @@ public class Chessboard{
             String row = "[  "+i+"  ]";
             for(int j = 1; j <= 8; j++){
                 if(i != 0){
-                    Cell cell = getCells()[i-1][j-1];
+                    Square cell = getCells()[i-1][j-1];
                     Piece piece = cell.getPiece();
                     row += "["+cell.getColor()+" ";
                     if(piece == null) row += nullName+" ";
