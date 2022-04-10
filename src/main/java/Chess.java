@@ -165,6 +165,8 @@ public class Chess{
     }
 
     public static void testRook(Chessboard chessboard){
+        chessboard.getCell(1, 2).setPiece(null); // remove pawn
+        //
         Cell cell = chessboard.getCell(1,1);
         Cell cell2 = chessboard.getCell(1,6);
         boolean move2 = chessboard.move(cell, cell2);

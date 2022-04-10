@@ -3,15 +3,15 @@ package sub;
 public class Chessboard{
 
     private Cell[][] cells;
-    private String white = "w";
-    private String black = "b";
+    private final String white = "w";
+    private final String black = "b";
     private final String rook = "R";
     private final String knight = "N";
     private final String bishop = "B";
     private final String queen = "Q";
     private final String king = "K";
     private final String pawn = "P";
-    private String nullName = "  ";
+    private final String nullName = "  ";
 
     public Chessboard(){
         cells = new Cell[8][8];
@@ -71,7 +71,7 @@ public class Chessboard{
     // move
 
     public boolean move(Cell cellFrom, Cell cellTo){
-        if(cellFrom == null || cellTo == null || !isMoveAvailable(cellFrom, cellTo)) return false;
+        if(cellFrom == null || cellTo == null || !isMoveAvailable(cellFrom, cellTo) || !emptySquaresBetween(cellFrom, cellTo)) return false;
         cellTo.setPiece(cellFrom.getPiece());
         cellFrom.setPiece(null);
         return true;
@@ -100,7 +100,9 @@ public class Chessboard{
                 if(positionXFrom == positionXTo || positionYFrom == positionYTo) return true;
                 break;
             case(knight):
-                if(Math.abs(positionXFrom - positionXTo) == 1 && Math.abs(positionYFrom - positionYTo) == 2 || Math.abs(positionXFrom - positionXTo) == 2 && Math.abs(positionYFrom - positionYTo) == 1) return true;
+                boolean verticalHorizontal = Math.abs(positionXFrom - positionXTo) == 1 && Math.abs(positionYFrom - positionYTo) == 2;
+                boolean horizontalVertical = Math.abs(positionXFrom - positionXTo) == 2 && Math.abs(positionYFrom - positionYTo) == 1;
+                if(verticalHorizontal || horizontalVertical) return true;
                 break;
             case(bishop):
                 if(Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo)) return true;
@@ -116,6 +118,39 @@ public class Chessboard{
                 break;
         }
         return false;
+    }
+
+    //
+
+    public boolean emptySquaresBetween(Cell cellFrom, Cell cellTo){
+        int positionXFrom = cellFrom.getPositionX();
+        int positionYFrom = cellFrom.getPositionY();
+        int positionXTo = cellTo.getPositionX();
+        int positionYTo = cellTo.getPositionY();
+        if(Math.abs(positionXFrom - positionXTo) <= 1 && Math.abs(positionYFrom - positionYTo) <= 1) return true;
+        else if(positionXFrom == positionXTo){
+            for(int i=1; i<Math.abs(positionYFrom - positionYTo); i++){
+                if(getCell(positionXFrom, Math.min(positionYFrom, positionYTo)+i).getPiece() != null) return false;
+            }
+        }
+        else if(positionYFrom == positionYTo){
+            for(int i=1; i<Math.abs(positionXFrom - positionXTo); i++){
+                if(getCell(Math.min(positionXFrom, positionXTo)+i, positionYFrom).getPiece() != null) return false;
+            }
+        }
+        else if(Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo)){
+            if( (positionXFrom - positionXTo)*(positionYFrom - positionYTo) > 0){
+                for(int i=1; i<Math.abs(positionYFrom - positionYTo); i++){
+                    if(getCell(Math.min(positionXFrom, positionXTo)+i, Math.min(positionYFrom, positionYTo)+i).getPiece() != null) return false;
+                }
+            }
+            else{
+                for(int i=1; i<Math.abs(positionYFrom - positionYTo); i++){
+                    if(getCell(Math.min(positionXFrom, positionXTo)+i, Math.max(positionYFrom, positionYTo)-i).getPiece() != null) return false;
+                }
+            }
+        }
+        return true;
     }
 
     // extra
