@@ -2,7 +2,7 @@ package sub;
 
 public class Chessboard{
 
-    private Square[][] cells;
+    private Square[][] squares;
     private final String white = "w";
     private final String black = "b";
     private final String rook = "R";
@@ -14,24 +14,24 @@ public class Chessboard{
     private final String nullName = "  ";
 
     public Chessboard(){
-        cells = new Square[8][8];
-        setCells();
+        this.squares = new Square[8][8];
+        setSquares();
     }
 
     // GET
 
-    public Square[][] getCells(){
-        return cells;
+    public Square[][] getSquares(){
+        return this.squares;
     }
 
-    public Square getCell(int positionX, int positionY){
+    public Square getSquare(int positionX, int positionY){
         if((positionX<=0 || positionX>=9) || (positionY<=0 || positionY>=9)) return null;
-        return getCells()[positionY-1][positionX-1];
+        return getSquares()[positionY-1][positionX-1];
     }
 
     // SET
 
-    private void setCells(){
+    private void setSquares(){
         for(int i=1; i<=8; i++){
             for(int j=1; j<=8; j++){
                 String pieceName = "";
@@ -63,32 +63,32 @@ public class Chessboard{
                 Piece piece = null;
                 if(i<=2) piece = new Piece(pieceName, white);
                 if(i>=7) piece = new Piece(pieceName, black);
-                cells[i-1][j-1] = new Square(j, i, (i+j)%2==0?black:white, piece);
+                squares[i-1][j-1] = new Square(j, i, (i+j)%2==0?black:white, piece);
             }
         }
     }
 
     // move
 
-    public boolean move(Square cellFrom, Square cellTo){
-        if(cellFrom == null || cellTo == null || !isMoveAvailable(cellFrom, cellTo) || !emptySquaresBetween(cellFrom, cellTo)) return false;
-        cellTo.setPiece(cellFrom.getPiece());
-        cellFrom.setPiece(null);
+    public boolean move(Square squareFrom, Square squareTo){
+        if(squareFrom == null || squareTo == null || !isMoveAvailable(squareFrom, squareTo) || !emptySquaresBetween(squareFrom, squareTo)) return false;
+        squareTo.setPiece(squareFrom.getPiece());
+        squareFrom.setPiece(null);
         return true;
     }
 
-    private boolean isMoveAvailable(Square cellFrom, Square cellTo){
-        Piece pieceFrom = cellFrom.getPiece();
-        Piece pieceTo = cellTo.getPiece();
-        if(pieceFrom == null) return false; // there is not any piece in this cell
-        if(pieceTo != null && pieceFrom.getColor().equals(pieceTo.getColor())) return false; // there is the same color piece in "cellTo" cell
+    private boolean isMoveAvailable(Square squareFrom, Square squareTo){
+        Piece pieceFrom = squareFrom.getPiece();
+        Piece pieceTo = squareTo.getPiece();
+        if(pieceFrom == null) return false; // there is not any piece in this square
+        if(pieceTo != null && pieceFrom.getColor().equals(pieceTo.getColor())) return false; // there is the same color piece in "squareTo" square
         String pieceFromName = pieceFrom.getName();
         //
-        int positionXFrom = cellFrom.getPositionX();
-        int positionYFrom = cellFrom.getPositionY();
-        String colorFrom = cellFrom.getPiece().getColor();
-        int positionXTo = cellTo.getPositionX();
-        int positionYTo = cellTo.getPositionY();
+        int positionXFrom = squareFrom.getPositionX();
+        int positionYFrom = squareFrom.getPositionY();
+        String colorFrom = squareFrom.getPiece().getColor();
+        int positionXTo = squareTo.getPositionX();
+        int positionYTo = squareTo.getPositionY();
         switch(pieceFromName){
             case(pawn):
                 if(positionXFrom != positionXTo) return false; // no consider capturing another pawn
@@ -120,31 +120,31 @@ public class Chessboard{
         return false;
     }
 
-    public boolean emptySquaresBetween(Square cellFrom, Square cellTo){
-        int positionXFrom = cellFrom.getPositionX();
-        int positionYFrom = cellFrom.getPositionY();
-        int positionXTo = cellTo.getPositionX();
-        int positionYTo = cellTo.getPositionY();
+    public boolean emptySquaresBetween(Square squareFrom, Square squareTo){
+        int positionXFrom = squareFrom.getPositionX();
+        int positionYFrom = squareFrom.getPositionY();
+        int positionXTo = squareTo.getPositionX();
+        int positionYTo = squareTo.getPositionY();
         if(Math.abs(positionXFrom - positionXTo) <= 1 && Math.abs(positionYFrom - positionYTo) <= 1) return true;
         else if(positionXFrom == positionXTo){
             for(int i=1; i<Math.abs(positionYFrom - positionYTo); i++){
-                if(getCell(positionXFrom, Math.min(positionYFrom, positionYTo)+i).getPiece() != null) return false;
+                if(getSquare(positionXFrom, Math.min(positionYFrom, positionYTo)+i).getPiece() != null) return false;
             }
         }
         else if(positionYFrom == positionYTo){
             for(int i=1; i<Math.abs(positionXFrom - positionXTo); i++){
-                if(getCell(Math.min(positionXFrom, positionXTo)+i, positionYFrom).getPiece() != null) return false;
+                if(getSquare(Math.min(positionXFrom, positionXTo)+i, positionYFrom).getPiece() != null) return false;
             }
         }
         else if(Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo)){
             if( (positionXFrom - positionXTo)*(positionYFrom - positionYTo) > 0){
                 for(int i=1; i<Math.abs(positionYFrom - positionYTo); i++){
-                    if(getCell(Math.min(positionXFrom, positionXTo)+i, Math.min(positionYFrom, positionYTo)+i).getPiece() != null) return false;
+                    if(getSquare(Math.min(positionXFrom, positionXTo)+i, Math.min(positionYFrom, positionYTo)+i).getPiece() != null) return false;
                 }
             }
             else{
                 for(int i=1; i<Math.abs(positionYFrom - positionYTo); i++){
-                    if(getCell(Math.min(positionXFrom, positionXTo)+i, Math.max(positionYFrom, positionYTo)-i).getPiece() != null) return false;
+                    if(getSquare(Math.min(positionXFrom, positionXTo)+i, Math.max(positionYFrom, positionYTo)-i).getPiece() != null) return false;
                 }
             }
         }
@@ -154,22 +154,23 @@ public class Chessboard{
     // extra
 
     public void print(){
-        for(int i=8; i>=0; i--){
+        for(int i=8; i>0; i--){
             String row = "[  "+i+"  ]";
             for(int j = 1; j <= 8; j++){
-                if(i != 0){
-                    Square cell = getCells()[i-1][j-1];
-                    Piece piece = cell.getPiece();
-                    row += "["+cell.getColor()+" ";
-                    if(piece == null) row += nullName+" ";
-                    else row += piece.getName()+" "+piece.getColor();
-                    row += "]";
-                } else{
-                    row += "[  "+j+"  ]";
-                }
+                Square square = getSquares()[i-1][j-1];
+                Piece piece = square.getPiece();
+                row += "["+square.getColor()+" ";
+                if(piece == null) row += nullName+" ";
+                else row += piece.getName()+" "+piece.getColor();
+                row += "]";
             }
             System.out.println(row);
         }
+        String row = "[     ]";
+        for(char i='a'; i<='h'; i++){
+            row += "[  "+i+"  ]";
+        }
+        System.out.println(row);
     }
 
 }
