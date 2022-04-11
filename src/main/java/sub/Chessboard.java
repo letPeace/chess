@@ -12,9 +12,11 @@ public class Chessboard{
     private final String king = "K";
     private final String pawn = "P";
     private final String nullName = "  ";
+    private Move movesArrayList;
 
     public Chessboard(){
         this.squares = new Square[8][8];
+        this.movesArrayList = new Move();
         setSquares();
     }
 
@@ -72,6 +74,8 @@ public class Chessboard{
 
     public boolean move(Square squareFrom, Square squareTo){
         if(squareFrom == null || squareTo == null || !isMoveAvailable(squareFrom, squareTo) || !emptySquaresBetween(squareFrom, squareTo)) return false;
+        movesArrayList.add(squareFrom, squareTo);
+        movesArrayList.print();
         squareTo.setPiece(squareFrom.getPiece());
         squareFrom.setPiece(null);
         return true;
