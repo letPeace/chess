@@ -11,12 +11,10 @@ public class Chessboard{
     private final String queen = "Q";
     private final String king = "K";
     private final String pawn = "P";
-    private final String nullName = "  ";
-    private Move movesArrayList;
+    private final String nullName = "   ";
 
     public Chessboard(){
         this.squares = new Square[8][8];
-        this.movesArrayList = new Move();
         setSquares();
     }
 
@@ -29,6 +27,42 @@ public class Chessboard{
     public Square getSquare(int positionX, int positionY){
         if((positionX<=0 || positionX>=9) || (positionY<=0 || positionY>=9)) return null;
         return getSquares()[positionY-1][positionX-1];
+    }
+
+    public String getStringWhite(){
+        return white;
+    }
+
+    public String getStringBlack(){
+        return black;
+    }
+
+    public String getStringRook(){
+        return rook;
+    }
+
+    public String getStringKnight(){
+        return knight;
+    }
+
+    public String getStringBishop(){
+        return bishop;
+    }
+
+    public String getStringQueen(){
+        return queen;
+    }
+
+    public String getStringKing(){
+        return king;
+    }
+
+    public String getStringPawn(){
+        return pawn;
+    }
+
+    public String getStringNullName(){
+        return nullName;
     }
 
     // SET
@@ -70,91 +104,6 @@ public class Chessboard{
         }
     }
 
-    // move
-
-    public boolean move(Square squareFrom, Square squareTo){
-        if(squareFrom == null || squareTo == null || !isMoveAvailable(squareFrom, squareTo) || !emptySquaresBetween(squareFrom, squareTo)) return false;
-        movesArrayList.add(squareFrom, squareTo);
-        movesArrayList.print();
-        squareTo.setPiece(squareFrom.getPiece());
-        squareFrom.setPiece(null);
-        return true;
-    }
-
-    private boolean isMoveAvailable(Square squareFrom, Square squareTo){
-        Piece pieceFrom = squareFrom.getPiece();
-        Piece pieceTo = squareTo.getPiece();
-        if(pieceFrom == null) return false; // there is not any piece in this square
-        if(pieceTo != null && pieceFrom.getColor().equals(pieceTo.getColor())) return false; // there is the same color piece in "squareTo" square
-        String pieceFromName = pieceFrom.getName();
-        //
-        int positionXFrom = squareFrom.getPositionX();
-        int positionYFrom = squareFrom.getPositionY();
-        String colorFrom = squareFrom.getPiece().getColor();
-        int positionXTo = squareTo.getPositionX();
-        int positionYTo = squareTo.getPositionY();
-        switch(pieceFromName){
-            case(pawn):
-                if(positionXFrom != positionXTo) return false; // no consider capturing another pawn
-                boolean whitePawnCanMove = colorFrom.equals(white) && (positionYFrom == 2 && (positionYTo - positionYFrom) == 2 || (positionYTo - positionYFrom) == 1);
-                boolean blackPawnCanMove = colorFrom.equals(black) && (positionYFrom == 7 && (positionYTo - positionYFrom) == -2 || (positionYTo - positionYFrom) == -1);
-                if(whitePawnCanMove || blackPawnCanMove) return true;
-                break;
-            case(rook):
-                if(positionXFrom == positionXTo || positionYFrom == positionYTo) return true;
-                break;
-            case(knight):
-                boolean verticalHorizontal = Math.abs(positionXFrom - positionXTo) == 1 && Math.abs(positionYFrom - positionYTo) == 2;
-                boolean horizontalVertical = Math.abs(positionXFrom - positionXTo) == 2 && Math.abs(positionYFrom - positionYTo) == 1;
-                if(verticalHorizontal || horizontalVertical) return true;
-                break;
-            case(bishop):
-                if(Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo)) return true;
-                break;
-            case(queen):
-                boolean horizontal = positionXFrom == positionXTo;
-                boolean vertical = positionYFrom == positionYTo;
-                boolean diagonal = Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo);
-                if(horizontal || vertical || diagonal) return true;
-                break;
-            case(king):
-                if(Math.abs(positionXFrom - positionXTo) <= 1 && Math.abs(positionYFrom - positionYTo) <= 1) return true;
-                break;
-        }
-        return false;
-    }
-
-    public boolean emptySquaresBetween(Square squareFrom, Square squareTo){
-        int positionXFrom = squareFrom.getPositionX();
-        int positionYFrom = squareFrom.getPositionY();
-        int positionXTo = squareTo.getPositionX();
-        int positionYTo = squareTo.getPositionY();
-        if(Math.abs(positionXFrom - positionXTo) <= 1 && Math.abs(positionYFrom - positionYTo) <= 1) return true;
-        else if(positionXFrom == positionXTo){
-            for(int i=1; i<Math.abs(positionYFrom - positionYTo); i++){
-                if(getSquare(positionXFrom, Math.min(positionYFrom, positionYTo)+i).getPiece() != null) return false;
-            }
-        }
-        else if(positionYFrom == positionYTo){
-            for(int i=1; i<Math.abs(positionXFrom - positionXTo); i++){
-                if(getSquare(Math.min(positionXFrom, positionXTo)+i, positionYFrom).getPiece() != null) return false;
-            }
-        }
-        else if(Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo)){
-            if( (positionXFrom - positionXTo)*(positionYFrom - positionYTo) > 0){
-                for(int i=1; i<Math.abs(positionYFrom - positionYTo); i++){
-                    if(getSquare(Math.min(positionXFrom, positionXTo)+i, Math.min(positionYFrom, positionYTo)+i).getPiece() != null) return false;
-                }
-            }
-            else{
-                for(int i=1; i<Math.abs(positionYFrom - positionYTo); i++){
-                    if(getSquare(Math.min(positionXFrom, positionXTo)+i, Math.max(positionYFrom, positionYTo)-i).getPiece() != null) return false;
-                }
-            }
-        }
-        return true;
-    }
-
     // extra
 
     public void print(){
@@ -164,7 +113,7 @@ public class Chessboard{
                 Square square = getSquares()[i-1][j-1];
                 Piece piece = square.getPiece();
                 row += "["+square.getColor()+" ";
-                if(piece == null) row += nullName+" ";
+                if(piece == null) row += getStringNullName();
                 else row += piece.getName()+" "+piece.getColor();
                 row += "]";
             }

@@ -71,4 +71,8 @@ public class Square{
         System.out.println(getPositionX()+" "+getPositionY()+" "+pieceString);
     }
 
+    public String squareInfo(){
+        return getPositionX()+" "+getPositionY()+" "+(getPiece() == null ? "NODATA" : getPiece().pieceToString());
+    }
+
 }
