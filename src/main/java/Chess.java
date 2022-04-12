@@ -26,6 +26,15 @@ public class Chess{
                     move.print();
                     continue;
                 }
+                if(fileRankFrom.equals("back")){
+                    if(move.moveBack()){
+                        System.out.println("back");
+                        chessboard.print();
+                    } else{
+                        System.out.println("back error");
+                    }
+                    continue;
+                }
                 int xFrom = fileRankFrom.charAt(0) - 'a' + 1;
                 int yFrom = fileRankFrom.charAt(1) - '0';
                 //

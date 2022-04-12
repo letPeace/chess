@@ -134,10 +134,7 @@ public class Chessboard{
             for(int j = 1; j <= 8; j++){
                 Square square = getSquares()[i-1][j-1];
                 Piece piece = square.getPiece();
-                row += "[";
-                if(piece == null) row += nullSymbol;
-                else row += piece.getSymbol();
-                row += "]";
+                row += "[" + (piece == null ? nullSymbol : piece.getSymbol()) + "]";
             }
             System.out.println(row);
         }

@@ -4,14 +4,6 @@ import java.util.ArrayList;
 
 public class Move{
 
-    private ArrayList<SquarePair> squarePairArrayList;
-    private Chessboard chessboard;
-
-    public Move(){
-        this.squarePairArrayList = new ArrayList<>();
-        this.chessboard = new Chessboard();
-    }
-
     private class SquarePair extends Square{
         private Square squareFrom;
         private Square squareTo;
@@ -47,14 +39,48 @@ public class Move{
         }
     }
 
-    // ADD
+    private ArrayList<SquarePair> squarePairArrayList;
+    private Chessboard chessboard;
+    private String turn;
 
-    public void addSquarePair(SquarePair squarePair){
-        getSquarePairArrayList().add(new SquarePair(squarePair));
+    public Move(){
+        setSquarePairArrayList();
+        setChessboard();
+        setTurn();
     }
 
-    public void addSquarePair(Square squareFrom, Square squareTo){
-        getSquarePairArrayList().add(new SquarePair(squareFrom, squareTo));
+    // SET
+
+    public void setSquarePairArrayList(){
+        this.squarePairArrayList = new ArrayList<>();
+    }
+
+    public void setSquarePairArrayList(ArrayList<SquarePair> squarePairArrayList){
+        this.squarePairArrayList = squarePairArrayList;
+    }
+
+    public void setChessboard(){
+        this.chessboard = new Chessboard();
+    }
+
+    public void setChessboard(Chessboard chessboard){
+        this.chessboard = chessboard;
+    }
+
+    public void setTurn(){
+        this.turn = getChessboard().getStringWhite();
+    }
+
+    public void setTurn(String turn){
+        this.turn = turn;
+    }
+
+    public void setTurn(Square square){
+        this.turn = square.getPiece().getColor().equals(chessboard.getStringWhite()) ? chessboard.getStringBlack() : chessboard.getStringWhite();
+    }
+
+    public void setOppositeTurn(){
+        this.turn = turn.equals(chessboard.getStringWhite()) ? chessboard.getStringBlack() : chessboard.getStringWhite();
     }
 
     // GET
@@ -67,6 +93,10 @@ public class Move{
         return chessboard;
     }
 
+    public String getTurn(){
+        return turn;
+    }
+
     public SquarePair getMove(int index){
         if(index < 0 || index >= getSquarePairArrayList().size()) return null;
         return getSquarePairArrayList().get(index);
@@ -76,15 +106,48 @@ public class Move{
         return getSquarePairArrayList().get(getSquarePairArrayList().size()-1);
     }
 
+    // ADD
+
+    public void addSquarePair(SquarePair squarePair){
+        getSquarePairArrayList().add(new SquarePair(squarePair));
+    }
+
+    public void addSquarePair(Square squareFrom, Square squareTo){
+        getSquarePairArrayList().add(new SquarePair(squareFrom, squareTo));
+    }
+
     // move
 
     public boolean move(Square squareFrom, Square squareTo){
-        if(squareFrom == null || squareTo == null || !isMoveAvailable(squareFrom, squareTo) || !emptySquaresBetween(squareFrom, squareTo)) return false;
+        if(squareFrom == null || squareTo == null || !isMoveAvailable(squareFrom, squareTo) || !emptySquaresBetween(squareFrom, squareTo) || !isCorrectTurn(squareFrom)) return false;
+//        setTurn(squareFrom);
+        setOppositeTurn();
         addSquarePair(squareFrom, squareTo);
-        printLastMove();
+//        printLastMove();
         squareTo.setPiece(squareFrom.getPiece());
         squareFrom.setPiece(null);
         return true;
+    }
+
+    public boolean moveBack(){
+        if(squarePairArrayList == null || squarePairArrayList.size() == 0) return false; // is ==null necessary ?
+        Square squareFromInfo = getLastMove().getSquareFrom();
+        Square squareToInfo = getLastMove().getSquareTo();
+        Square squareFrom = chessboard.getSquare(squareFromInfo.getPositionX(), squareFromInfo.getPositionY());
+        Square squareTo = chessboard.getSquare(squareToInfo.getPositionX(), squareToInfo.getPositionY());
+        squareFrom.setPiece(squareFromInfo.getPiece());
+        squareTo.setPiece(squareToInfo.getPiece());
+        getSquarePairArrayList().remove(squarePairArrayList.size() - 1);
+        setOppositeTurn();
+        return true;
+    }
+
+    private boolean isCorrectTurn(Square squareFrom){
+        Piece pieceFrom = squareFrom.getPiece();
+        // should we check if it is null ?
+        String colorFrom = pieceFrom.getColor();
+        if(colorFrom.equals(getTurn())) return true;
+        return false;
     }
 
     private boolean isMoveAvailable(Square squareFrom, Square squareTo){
