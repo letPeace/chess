@@ -3,6 +3,7 @@ package sub;
 public class Chessboard{
 
     private Square[][] squares;
+    // probably should create list of existing pieces
     //
     private final String white = "w";
     private final String black = "b";
@@ -42,6 +43,15 @@ public class Chessboard{
     public Square getSquare(int positionX, int positionY){
         if((positionX<=0 || positionX>=9) || (positionY<=0 || positionY>=9)) return null;
         return getSquares()[positionY-1][positionX-1];
+    }
+
+    public Square getSquare(Piece piece){
+        for(int i=1; i<=8; i++){
+            for(int j=1; j<=8; j++){
+                if(piece.equals(getSquares()[i-1][j-1].getPiece())) return getSquares()[i-1][j-1];
+            }
+        }
+        return null;
     }
 
     public String getStringWhite(){
@@ -129,19 +139,27 @@ public class Chessboard{
     // extra
 
     public void print(){
+        String row = "[ ]";
+        for(char i='\uFF41'; i<='\uFF48'; i++){
+            row += "["+i+"]";
+        }
+        row += "[ ]";
+        System.out.println(row);
         for(int i=8; i>0; i--){
-            String row = "["+i+"]";
+            row = "["+i+"]";
             for(int j = 1; j <= 8; j++){
                 Square square = getSquares()[i-1][j-1];
                 Piece piece = square.getPiece();
                 row += "[" + (piece == null ? nullSymbol : piece.getSymbol()) + "]";
             }
+            row += "["+i+"]";
             System.out.println(row);
         }
-        String row = "[ ]";
+        row = "[ ]";
         for(char i='\uFF41'; i<='\uFF48'; i++){
             row += "["+i+"]";
         }
+        row += "[ ]";
         System.out.println(row);
     }
 

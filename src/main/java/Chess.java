@@ -17,6 +17,7 @@ public class Chess{
 //        testBishop(move);
 //        testQueen(move);
 //        testKing(move);
+//        testCheck(move);
         Scanner input = new Scanner(System.in);
         while(true){
             try{
@@ -53,6 +54,26 @@ public class Chess{
             }
         }
         input.close();
+    }
+
+    public static void testCheck(Move move){
+        Chessboard chessboard = move.getChessboard();
+        //
+        chessboard.getSquare(6, 2).setPiece(null); // remove pawn
+        chessboard.getSquare(3, 2).setPiece(null); // remove pawn
+        chessboard.getSquare(5, 7).setPiece(null); // remove pawn
+        chessboard.getSquare(4, 7).setPiece(null); // remove pawn
+        //
+        Square cell = chessboard.getSquare(4,1);
+        Square cell1 = chessboard.getSquare(1,4);
+        boolean move1 = move.move(cell, cell1);
+        //
+        cell = chessboard.getSquare(4,8);
+        Square cell2 = chessboard.getSquare(8,4);
+        boolean move2 = move.move(cell, cell2);
+
+        System.out.println("/move1 = "+move1+"/move2 = "+move2);
+        chessboard.print();
     }
 
     public static void testKing(Move move){

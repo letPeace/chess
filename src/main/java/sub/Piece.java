@@ -2,33 +2,33 @@ package sub;
 
 public class Piece{
 
-    private String color;
     private String name;
+    private String color;
     private String symbol;
-
-    public Piece(String name, String color, String symbol){
-        setColor(color);
-        setName(name);
-        setSymbol(symbol);
-    }
-
-    public Piece(String name, String color){
-        setColor(color);
-        setName(name);
-    }
 
     public Piece(){
         //
     }
 
-    // SET
-
-    public void setColor(String color){
-        this.color = color;
+    public Piece(String name, String color){
+        setName(name);
+        setColor(color);
     }
+
+    public Piece(String name, String color, String symbol){
+        setName(name);
+        setColor(color);
+        setSymbol(symbol);
+    }
+
+    // SET
 
     public void setName(String name){
         this.name = name;
+    }
+
+    public void setColor(String color){
+        this.color = color;
     }
 
     public void setSymbol(String pieceSymbol){
@@ -37,12 +37,12 @@ public class Piece{
 
     // GET
 
-    public String getColor(){
-        return color;
-    }
-
     public String getName(){
         return name;
+    }
+
+    public String getColor(){
+        return color;
     }
 
     public String getSymbol(){
@@ -51,12 +51,21 @@ public class Piece{
 
     // extra
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null) return false;
+        if (getClass() != object.getClass()) return false;
+        Piece pieceObject = (Piece) object;
+        return name.equals(pieceObject.name) && color.equals(pieceObject.color);
+    }
+
     public void print(){
-        System.out.println(getName()+" "+getColor());
+        System.out.println(getName()+" "+getColor()+" "+getSymbol());
     }
 
     public String pieceToString(){
-        return getName()+" "+getColor();
+        return getName()+" "+getColor()+" "+getSymbol();
     }
 
 }

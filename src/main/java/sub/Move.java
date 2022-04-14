@@ -76,7 +76,11 @@ public class Move{
     }
 
     public void setTurn(Square square){
-        this.turn = square.getPiece().getColor().equals(chessboard.getStringWhite()) ? chessboard.getStringBlack() : chessboard.getStringWhite();
+        if(square.getPiece().getColor().equals(chessboard.getStringWhite())){
+            this.turn = chessboard.getStringBlack();
+        } else{
+            this.turn = chessboard.getStringWhite();
+        }
     }
 
     public void setOppositeTurn(){
@@ -108,24 +112,54 @@ public class Move{
 
     // ADD
 
-    public void addSquarePair(SquarePair squarePair){
+    public void addSquarePair(final SquarePair squarePair){
         getSquarePairArrayList().add(new SquarePair(squarePair));
     }
 
-    public void addSquarePair(Square squareFrom, Square squareTo){
+    public void addSquarePair(final Square squareFrom, final Square squareTo){
         getSquarePairArrayList().add(new SquarePair(squareFrom, squareTo));
+    }
+
+    // checkmate
+
+    private boolean givesCheck(final Square square){ // king is supposed to be unable to be killed
+        // does square.getPiece() place the opposite king in check ?
+        String pieceColor = square.getPiece().getColor();
+        Square squareKing;
+        if(pieceColor.equals(chessboard.getStringWhite())){
+            squareKing = chessboard.getSquare(new Piece(chessboard.getStringKing(), chessboard.getStringBlack(), null));
+        } else{
+            squareKing = chessboard.getSquare(new Piece(chessboard.getStringKing(), chessboard.getStringWhite(), null));
+        }
+        return isMoveAvailable(square, squareKing) && emptySquaresBetween(square, squareKing);
+    }
+
+    private boolean inCheck(final Square square){ // king is supposed to be unable to be killed
+        // square = square that square.getPiece() has just moved to, so we have to check if its king is in check
+        String color = square.getPiece().getColor();
+        for(int i=1; i<=8; i++){
+            for(int j=1; j<=8; j++){
+                Square squareChecking = chessboard.getSquare(j, i);
+                Piece pieceChecking = squareChecking.getPiece();
+                if(pieceChecking == null || color.equals(pieceChecking.getColor())) continue;
+                if(givesCheck(squareChecking)) return true;
+            }
+        }
+        return false;
     }
 
     // move
 
-    public boolean move(Square squareFrom, Square squareTo){
+    public boolean move(Square squareFrom, Square squareTo){ // rename method to "tryMove" or "pseudoMove"
         if(squareFrom == null || squareTo == null || !isMoveAvailable(squareFrom, squareTo) || !emptySquaresBetween(squareFrom, squareTo) || !isCorrectTurn(squareFrom)) return false;
-//        setTurn(squareFrom);
+        // call method "move"
         setOppositeTurn();
         addSquarePair(squareFrom, squareTo);
 //        printLastMove();
         squareTo.setPiece(squareFrom.getPiece());
         squareFrom.setPiece(null);
+        System.out.println("opp king is in check = "+givesCheck(squareTo));
+        System.out.println("my king is in check = "+inCheck(squareTo));
         return true;
     }
 
@@ -142,15 +176,14 @@ public class Move{
         return true;
     }
 
-    private boolean isCorrectTurn(Square squareFrom){
+    private boolean isCorrectTurn(final Square squareFrom){
         Piece pieceFrom = squareFrom.getPiece();
         // should we check if it is null ?
         String colorFrom = pieceFrom.getColor();
-        if(colorFrom.equals(getTurn())) return true;
-        return false;
+        return colorFrom.equals(getTurn());
     }
 
-    private boolean isMoveAvailable(Square squareFrom, Square squareTo){
+    private boolean isMoveAvailable(final Square squareFrom, final Square squareTo){
         Piece pieceFrom = squareFrom.getPiece();
         Piece pieceTo = squareTo.getPiece();
         if(pieceFrom == null) return false; // there is not any piece in this square
@@ -164,30 +197,30 @@ public class Move{
         int positionYTo = squareTo.getPositionY();
         //
         if(pieceFromName.equals(chessboard.getStringPawn())){ // PAWN
-            if(positionXFrom != positionXTo) return false; // no consider capturing another pawn
+            if(positionXFrom != positionXTo) return false; // we do not consider capture another pawn
             boolean whitePawnCanMove = colorFrom.equals(chessboard.getStringWhite()) && (positionYFrom == 2 && (positionYTo - positionYFrom) == 2 || (positionYTo - positionYFrom) == 1);
             boolean blackPawnCanMove = colorFrom.equals(chessboard.getStringBlack()) && (positionYFrom == 7 && (positionYTo - positionYFrom) == -2 || (positionYTo - positionYFrom) == -1);
-            if(whitePawnCanMove || blackPawnCanMove) return true;
+            return whitePawnCanMove || blackPawnCanMove;
         } else if(pieceFromName.equals(chessboard.getStringRook())){ // ROOK
-            if(positionXFrom == positionXTo || positionYFrom == positionYTo) return true;
+            return positionXFrom == positionXTo || positionYFrom == positionYTo;
         } else if(pieceFromName.equals(chessboard.getStringKnight())){
             boolean verticalHorizontal = Math.abs(positionXFrom - positionXTo) == 1 && Math.abs(positionYFrom - positionYTo) == 2;
             boolean horizontalVertical = Math.abs(positionXFrom - positionXTo) == 2 && Math.abs(positionYFrom - positionYTo) == 1;
-            if(verticalHorizontal || horizontalVertical) return true;
+            return verticalHorizontal || horizontalVertical;
         } else if(pieceFromName.equals(chessboard.getStringBishop())){ // BISHOP
-            if(Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo)) return true;
+            return Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo);
         } else if(pieceFromName.equals(chessboard.getStringQueen())){ // QUEEN
             boolean horizontal = positionXFrom == positionXTo;
             boolean vertical = positionYFrom == positionYTo;
             boolean diagonal = Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo);
-            if(horizontal || vertical || diagonal) return true;
+            return horizontal || vertical || diagonal;
         } else if(pieceFromName.equals(chessboard.getStringKing())){ // KING
-            if(Math.abs(positionXFrom - positionXTo) <= 1 && Math.abs(positionYFrom - positionYTo) <= 1) return true;
+            return Math.abs(positionXFrom - positionXTo) <= 1 && Math.abs(positionYFrom - positionYTo) <= 1;
         }
         return false;
     }
 
-    public boolean emptySquaresBetween(Square squareFrom, Square squareTo){
+    public boolean emptySquaresBetween(final Square squareFrom, final Square squareTo){
         int positionXFrom = squareFrom.getPositionX();
         int positionYFrom = squareFrom.getPositionY();
         int positionXTo = squareTo.getPositionX();
