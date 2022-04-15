@@ -1,6 +1,6 @@
 package sub;
 
-public class Piece{
+public class Piece implements Cloneable{
 
     private String name;
     private String color;
@@ -58,6 +58,15 @@ public class Piece{
         if (getClass() != object.getClass()) return false;
         Piece pieceObject = (Piece) object;
         return name.equals(pieceObject.name) && color.equals(pieceObject.color);
+    }
+
+    @Override
+    public Piece clone(){
+        Piece piece = new Piece();
+        piece.setName(this.getName());
+        piece.setColor(this.getColor());
+        piece.setSymbol(this.getSymbol());
+        return piece;
     }
 
     public void print(){

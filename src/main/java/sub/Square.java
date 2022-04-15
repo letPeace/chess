@@ -1,6 +1,6 @@
 package sub;
 
-public class Square{
+public class Square implements Cloneable{
 
     private int positionX;
     private int positionY;
@@ -65,6 +65,16 @@ public class Square{
     }
 
     // extra
+
+    @Override
+    public Square clone(){
+        Square square = new Square();
+        square.setPositionX(this.getPositionX());
+        square.setPositionY(this.getPositionY());
+        square.setColor(this.getColor());
+        square.setPiece(this.getPiece() == null ? null : this.getPiece().clone());
+        return square;
+    }
 
     public void print(){
         String pieceString = getPiece() == null ? "NODATA" : getPiece().pieceToString();

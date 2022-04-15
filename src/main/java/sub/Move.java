@@ -75,16 +75,14 @@ public class Move{
         this.turn = turn;
     }
 
-    public void setTurn(Square square){
-        if(square.getPiece().getColor().equals(chessboard.getStringWhite())){
-            this.turn = chessboard.getStringBlack();
-        } else{
-            this.turn = chessboard.getStringWhite();
-        }
-    }
-
     public void setOppositeTurn(){
-        this.turn = turn.equals(chessboard.getStringWhite()) ? chessboard.getStringBlack() : chessboard.getStringWhite();
+        String white = chessboard.getStringWhite();
+        String black = chessboard.getStringBlack();
+        if (turn.equals(white)) {
+            setTurn(black);
+        } else {
+            setTurn(white);
+        }
     }
 
     // GET
@@ -134,32 +132,47 @@ public class Move{
         return isMoveAvailable(square, squareKing) && emptySquaresBetween(square, squareKing);
     }
 
-    private boolean inCheck(final Square square){ // king is supposed to be unable to be killed
+    private ArrayList<Square> inCheck(final Square square){ // king is supposed to be unable to be killed
         // square = square that square.getPiece() has just moved to, so we have to check if its king is in check
+        ArrayList<Square> squaresGivingCheck = new ArrayList<>();
         String color = square.getPiece().getColor();
         for(int i=1; i<=8; i++){
             for(int j=1; j<=8; j++){
                 Square squareChecking = chessboard.getSquare(j, i);
                 Piece pieceChecking = squareChecking.getPiece();
                 if(pieceChecking == null || color.equals(pieceChecking.getColor())) continue;
-                if(givesCheck(squareChecking)) return true;
+                if(givesCheck(squareChecking)) squaresGivingCheck.add(squareChecking);
             }
         }
-        return false;
+        if(squaresGivingCheck.isEmpty()) return null;
+        return squaresGivingCheck;
     }
 
     // move
 
-    public boolean move(Square squareFrom, Square squareTo){ // rename method to "tryMove" or "pseudoMove"
-        if(squareFrom == null || squareTo == null || !isMoveAvailable(squareFrom, squareTo) || !emptySquaresBetween(squareFrom, squareTo) || !isCorrectTurn(squareFrom)) return false;
-        // call method "move"
+    public boolean pseudoMove(Square squareFrom, Square squareTo){
+        if(squareFrom == null || squareTo == null) return false;
+        boolean isMoveAvailable = isMoveAvailable(squareFrom, squareTo);
+        boolean emptySquaresBetween = emptySquaresBetween(squareFrom, squareTo);
+        boolean isCorrectTurn = isCorrectTurn(squareFrom);
+        if(isMoveAvailable && emptySquaresBetween && isCorrectTurn) {
+            Square squareFromClone = squareFrom.clone();
+            move(squareFrom, squareTo);
+            boolean inCheck = inCheck(squareFromClone) != null;
+            if(inCheck){
+                moveBack();
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean move(Square squareFrom, Square squareTo){
         setOppositeTurn();
         addSquarePair(squareFrom, squareTo);
-//        printLastMove();
         squareTo.setPiece(squareFrom.getPiece());
         squareFrom.setPiece(null);
-        System.out.println("opp king is in check = "+givesCheck(squareTo));
-        System.out.println("my king is in check = "+inCheck(squareTo));
         return true;
     }
 

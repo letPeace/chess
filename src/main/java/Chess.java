@@ -46,7 +46,7 @@ public class Chess{
                 Square cellFrom = chessboard.getSquare(xFrom, yFrom);
                 Square cellTo = chessboard.getSquare(xTo, yTo);
                 //
-                boolean isMoveSuccessful = move.move(cellFrom, cellTo);
+                boolean isMoveSuccessful = move.pseudoMove(cellFrom, cellTo);
                 System.out.println("["+xFrom+","+yFrom+"] -> ["+xTo+","+yTo+"] = "+isMoveSuccessful);
                 chessboard.print();
             } catch(Exception e){
@@ -66,16 +66,16 @@ public class Chess{
         //
         Square cell = chessboard.getSquare(4,1);
         Square cell1 = chessboard.getSquare(1,4);
-        boolean move1 = move.move(cell, cell1);
+        boolean move1 = move.pseudoMove(cell, cell1);
         //
         cell = chessboard.getSquare(4,8);
         Square cell2 = chessboard.getSquare(8,4);
-        boolean move2 = move.move(cell, cell2);
+        boolean move2 = move.pseudoMove(cell, cell2);
 
         System.out.println("/move1 = "+move1+"/move2 = "+move2);
         chessboard.print();
     }
-
+/*
     public static void testKing(Move move){
         Chessboard chessboard = move.getChessboard();
         //
@@ -303,5 +303,5 @@ public class Chess{
         System.out.println("/move2 = "+move2+"/move3 = "+move3+"/move4 = "+move4+"/move5 = "+move5+"/move6 = "+move6+"/move7 = "+move7);
         chessboard.print();
     }
-
+*/
 }
