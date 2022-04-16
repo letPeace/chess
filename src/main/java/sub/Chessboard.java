@@ -98,7 +98,23 @@ public class Chessboard{
                 String pieceName = "";
                 String pieceSymbol = nullSymbol;
                 if(i==1 || i==8){
-                    switch(j){
+                    if(j==1 || j==8){
+                        pieceName = rook;
+                        pieceSymbol = i==1 ? rookWhite : rookBlack;
+                    } else if(j==2 || j==7){
+                        pieceName = knight;
+                        pieceSymbol = i==1 ? knightWhite : knightBlack;
+                    } else if(j==3 || j==6){
+                        pieceName = bishop;
+                        pieceSymbol = i==1 ? bishopWhite : bishopBlack;
+                    } else if(j==4){
+                        pieceName = queen;
+                        pieceSymbol = i==1 ? queenWhite : queenBlack;
+                    } else if(j==5){
+                        pieceName = king;
+                        pieceSymbol = i==1 ? kingWhite : kingBlack;
+                    }
+                    /*switch(j){
                         case(1):
                         case(8):
                             pieceName = rook;
@@ -122,7 +138,7 @@ public class Chessboard{
                             pieceName = king;
                             pieceSymbol = i==1 ? kingWhite : kingBlack;
                             break;
-                    }
+                    }*/
                 }
                 if(i==2 || i==7){
                     pieceName = pawn;
@@ -131,7 +147,7 @@ public class Chessboard{
                 Piece piece = null;
                 if(i<=2) piece = new Piece(pieceName, white, pieceSymbol);
                 if(i>=7) piece = new Piece(pieceName, black, pieceSymbol);
-                squares[i-1][j-1] = new Square(j, i, (i+j)%2==0?black:white, piece);
+                squares[i-1][j-1] = new Square(j, i, (i+j)%2==0 ? black : white, piece);
             }
         }
     }
@@ -139,14 +155,9 @@ public class Chessboard{
     // extra
 
     public void print(){
-        String row = "[ ]";
-        for(char i='\uFF41'; i<='\uFF48'; i++){
-            row += "["+i+"]";
-        }
-        row += "[ ]";
-        System.out.println(row);
+        printCharacters();
         for(int i=8; i>0; i--){
-            row = "["+i+"]";
+            String row = "["+i+"]";
             for(int j = 1; j <= 8; j++){
                 Square square = getSquares()[i-1][j-1];
                 Piece piece = square.getPiece();
@@ -155,7 +166,11 @@ public class Chessboard{
             row += "["+i+"]";
             System.out.println(row);
         }
-        row = "[ ]";
+        printCharacters();
+    }
+
+    private void printCharacters(){
+        String row = "[ ]";
         for(char i='\uFF41'; i<='\uFF48'; i++){
             row += "["+i+"]";
         }

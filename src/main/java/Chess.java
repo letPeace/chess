@@ -28,29 +28,24 @@ public class Chess{
                     continue;
                 }
                 if(fileRankFrom.equals("back")){
-                    if(move.moveBack()){
-                        System.out.println("back");
-                        chessboard.print();
-                    } else{
-                        System.out.println("back error");
-                    }
+                    if(move.moveBack()) chessboard.print();
+                    else System.out.println("impossible to move back");
                     continue;
                 }
                 int xFrom = fileRankFrom.charAt(0) - 'a' + 1;
                 int yFrom = fileRankFrom.charAt(1) - '0';
+                Square cellFrom = chessboard.getSquare(xFrom, yFrom);
                 //
                 String fileRankTo = input.nextLine();
                 int xTo = fileRankTo.charAt(0) - 'a' + 1;
                 int yTo = fileRankTo.charAt(1) - '0';
-                //
-                Square cellFrom = chessboard.getSquare(xFrom, yFrom);
                 Square cellTo = chessboard.getSquare(xTo, yTo);
                 //
-                boolean isMoveSuccessful = move.pseudoMove(cellFrom, cellTo);
+                boolean isMoveSuccessful = move.move(cellFrom, cellTo);
                 System.out.println("["+xFrom+","+yFrom+"] -> ["+xTo+","+yTo+"] = "+isMoveSuccessful);
                 chessboard.print();
             } catch(Exception e){
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
         input.close();
@@ -66,11 +61,11 @@ public class Chess{
         //
         Square cell = chessboard.getSquare(4,1);
         Square cell1 = chessboard.getSquare(1,4);
-        boolean move1 = move.pseudoMove(cell, cell1);
+        boolean move1 = move.move(cell, cell1);
         //
         cell = chessboard.getSquare(4,8);
         Square cell2 = chessboard.getSquare(8,4);
-        boolean move2 = move.pseudoMove(cell, cell2);
+        boolean move2 = move.move(cell, cell2);
 
         System.out.println("/move1 = "+move1+"/move2 = "+move2);
         chessboard.print();

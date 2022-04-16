@@ -78,11 +78,8 @@ public class Move{
     public void setOppositeTurn(){
         String white = chessboard.getStringWhite();
         String black = chessboard.getStringBlack();
-        if (turn.equals(white)) {
-            setTurn(black);
-        } else {
-            setTurn(white);
-        }
+        if (turn.equals(white)) setTurn(black);
+        else setTurn(white);
     }
 
     // GET
@@ -120,70 +117,63 @@ public class Move{
 
     // checkmate
 
-    private boolean givesCheck(final Square square){ // king is supposed to be unable to be killed
-        // does square.getPiece() place the opposite king in check ?
+    private boolean givesCheck(final Square square){ // does square.getPiece() place the opposite king in check ?
         String pieceColor = square.getPiece().getColor();
-        Square squareKing;
-        if(pieceColor.equals(chessboard.getStringWhite())){
-            squareKing = chessboard.getSquare(new Piece(chessboard.getStringKing(), chessboard.getStringBlack(), null));
-        } else{
-            squareKing = chessboard.getSquare(new Piece(chessboard.getStringKing(), chessboard.getStringWhite(), null));
-        }
+        String kingColor = pieceColor.equals(chessboard.getStringWhite()) ? chessboard.getStringBlack() : chessboard.getStringWhite();
+        Square squareKing = chessboard.getSquare(new Piece(chessboard.getStringKing(), kingColor));
         return isMoveAvailable(square, squareKing) && emptySquaresBetween(square, squareKing);
     }
 
-    private ArrayList<Square> inCheck(final Square square){ // king is supposed to be unable to be killed
-        // square = square that square.getPiece() has just moved to, so we have to check if its king is in check
-        ArrayList<Square> squaresGivingCheck = new ArrayList<>();
-        String color = square.getPiece().getColor();
-        for(int i=1; i<=8; i++){
+    private ArrayList<Square> placedInCheckBy(final Square square){ // square.getPiece() has just moved, so we have to check if its king is in check
+        ArrayList<Square> squaresPlacingKingInCheck = new ArrayList<>();
+        String pieceColor = square.getPiece().getColor();
+        for(int i=1; i<=8; i++){ // it might be optimized
             for(int j=1; j<=8; j++){
                 Square squareChecking = chessboard.getSquare(j, i);
                 Piece pieceChecking = squareChecking.getPiece();
-                if(pieceChecking == null || color.equals(pieceChecking.getColor())) continue;
-                if(givesCheck(squareChecking)) squaresGivingCheck.add(squareChecking);
+                if(pieceChecking == null || pieceColor.equals(pieceChecking.getColor())) continue;
+                if(givesCheck(squareChecking)) squaresPlacingKingInCheck.add(squareChecking);
             }
         }
-        if(squaresGivingCheck.isEmpty()) return null;
-        return squaresGivingCheck;
+        if(squaresPlacingKingInCheck.isEmpty()) return null;
+        return squaresPlacingKingInCheck;
     }
 
     // move
 
-    public boolean pseudoMove(Square squareFrom, Square squareTo){
-        if(squareFrom == null || squareTo == null) return false;
+    public boolean move(Square squareFrom, Square squareTo){
+        if(squareFrom == null || squareTo == null) return false; // it is checked for NULL here, so it is not necessary to do it again
         boolean isMoveAvailable = isMoveAvailable(squareFrom, squareTo);
         boolean emptySquaresBetween = emptySquaresBetween(squareFrom, squareTo);
         boolean isCorrectTurn = isCorrectTurn(squareFrom);
-        if(isMoveAvailable && emptySquaresBetween && isCorrectTurn) {
+        if(isMoveAvailable && emptySquaresBetween && isCorrectTurn){ // if move is correct (excepting check)
             Square squareFromClone = squareFrom.clone();
-            move(squareFrom, squareTo);
-            boolean inCheck = inCheck(squareFromClone) != null;
-            if(inCheck){
+            replace(squareFrom, squareTo);
+            boolean kingIsPlacedInCheck = placedInCheckBy(squareFromClone) != null;
+            if(kingIsPlacedInCheck){ // king is placed in check after move => it is incorrect
                 moveBack();
                 return false;
             }
-            return true;
+            return true; // king is NOT placed in check after move => it is correct
         }
-        return false;
+        return false; // move is incorrect
     }
 
-    private boolean move(Square squareFrom, Square squareTo){
+    private void replace(Square squareFrom, Square squareTo){
         setOppositeTurn();
         addSquarePair(squareFrom, squareTo);
         squareTo.setPiece(squareFrom.getPiece());
         squareFrom.setPiece(null);
-        return true;
     }
 
     public boolean moveBack(){
-        if(squarePairArrayList == null || squarePairArrayList.size() == 0) return false; // is ==null necessary ?
-        Square squareFromInfo = getLastMove().getSquareFrom();
-        Square squareToInfo = getLastMove().getSquareTo();
-        Square squareFrom = chessboard.getSquare(squareFromInfo.getPositionX(), squareFromInfo.getPositionY());
-        Square squareTo = chessboard.getSquare(squareToInfo.getPositionX(), squareToInfo.getPositionY());
-        squareFrom.setPiece(squareFromInfo.getPiece());
-        squareTo.setPiece(squareToInfo.getPiece());
+        if(squarePairArrayList.size() == 0) return false;
+        Square squareFromLast = getLastMove().getSquareFrom();
+        Square squareToLast = getLastMove().getSquareTo();
+        Square squareFrom = chessboard.getSquare(squareFromLast.getPositionX(), squareFromLast.getPositionY());
+        Square squareTo = chessboard.getSquare(squareToLast.getPositionX(), squareToLast.getPositionY());
+        squareFrom.setPiece(squareFromLast.getPiece());
+        squareTo.setPiece(squareToLast.getPiece());
         getSquarePairArrayList().remove(squarePairArrayList.size() - 1);
         setOppositeTurn();
         return true;
@@ -191,21 +181,21 @@ public class Move{
 
     private boolean isCorrectTurn(final Square squareFrom){
         Piece pieceFrom = squareFrom.getPiece();
-        // should we check if it is null ?
-        String colorFrom = pieceFrom.getColor();
-        return colorFrom.equals(getTurn());
+        if(pieceFrom == null) return false;
+        return pieceFrom.getColor().equals(getTurn());
     }
 
     private boolean isMoveAvailable(final Square squareFrom, final Square squareTo){
         Piece pieceFrom = squareFrom.getPiece();
         Piece pieceTo = squareTo.getPiece();
         if(pieceFrom == null) return false; // there is not any piece in this square
-        if(pieceTo != null && pieceFrom.getColor().equals(pieceTo.getColor())) return false; // there is the same color piece in "squareTo" square
-        String pieceFromName = pieceFrom.getName();
+        if(pieceTo != null && pieceFrom.getColor().equals(pieceTo.getColor())) return false; // there is the same color piece in squareTo
         //
         int positionXFrom = squareFrom.getPositionX();
         int positionYFrom = squareFrom.getPositionY();
-        String colorFrom = squareFrom.getPiece().getColor();
+        String pieceFromName = pieceFrom.getName();
+        String colorFrom = pieceFrom.getColor();
+        //
         int positionXTo = squareTo.getPositionX();
         int positionYTo = squareTo.getPositionY();
         //
@@ -216,7 +206,7 @@ public class Move{
             return whitePawnCanMove || blackPawnCanMove;
         } else if(pieceFromName.equals(chessboard.getStringRook())){ // ROOK
             return positionXFrom == positionXTo || positionYFrom == positionYTo;
-        } else if(pieceFromName.equals(chessboard.getStringKnight())){
+        } else if(pieceFromName.equals(chessboard.getStringKnight())){ // KNIGHT
             boolean verticalHorizontal = Math.abs(positionXFrom - positionXTo) == 1 && Math.abs(positionYFrom - positionYTo) == 2;
             boolean horizontalVertical = Math.abs(positionXFrom - positionXTo) == 2 && Math.abs(positionYFrom - positionYTo) == 1;
             return verticalHorizontal || horizontalVertical;
@@ -267,13 +257,12 @@ public class Move{
     // extra
 
     public void print(){
-        System.out.println("Moves start:");
+        System.out.println("Moves:");
         int i = 1;
         for(SquarePair squarePair : getSquarePairArrayList()){
             System.out.println(i+") ["+squarePair.getSquareFrom().squareInfo()+"]["+squarePair.getSquareTo().squareInfo()+"]");
             i++;
         }
-        System.out.println("Moves end!");
     }
 
     public void printLastMove(){
