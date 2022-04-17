@@ -1,5 +1,7 @@
 package sub;
 
+import java.util.Objects;
+
 public class Piece implements Cloneable{
 
     private String name;
@@ -49,16 +51,7 @@ public class Piece implements Cloneable{
         return symbol;
     }
 
-    // extra
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null) return false;
-        if (getClass() != object.getClass()) return false;
-        Piece pieceObject = (Piece) object;
-        return name.equals(pieceObject.name) && color.equals(pieceObject.color);
-    }
+    // object methods
 
     @Override
     public Piece clone(){
@@ -68,6 +61,30 @@ public class Piece implements Cloneable{
         piece.setSymbol(this.getSymbol());
         return piece;
     }
+
+    @Override
+    public boolean equals(Object object){
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Piece piece = (Piece) object;
+        return name.equals(piece.name) && color.equals(piece.color);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(name, color);
+    }
+
+    @Override
+    public String toString(){
+        return "Piece{" +
+                "name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", symbol='" + symbol + '\'' +
+                '}';
+    }
+
+    // print
 
     public void print(){
         System.out.println(getName()+" "+getColor()+" "+getSymbol());

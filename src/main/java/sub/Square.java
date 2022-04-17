@@ -1,5 +1,7 @@
 package sub;
 
+import java.util.Objects;
+
 public class Square implements Cloneable{
 
     private int positionX;
@@ -64,7 +66,7 @@ public class Square implements Cloneable{
         return piece;
     }
 
-    // extra
+    // object methods
 
     @Override
     public Square clone(){
@@ -75,6 +77,31 @@ public class Square implements Cloneable{
         square.setPiece(this.getPiece() == null ? null : this.getPiece().clone());
         return square;
     }
+
+    @Override
+    public boolean equals(Object object){
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Square square = (Square) object;
+        return positionX == square.positionX && positionY == square.positionY && Objects.equals(piece, square.piece);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(positionX, positionY, piece);
+    }
+
+    @Override
+    public String toString(){
+        return "Square{" +
+                "positionX=" + positionX +
+                ", positionY=" + positionY +
+                ", color='" + color + '\'' +
+                ", piece=" + piece +
+                "}\n";
+    }
+
+    // print
 
     public void print(){
         String pieceString = getPiece() == null ? "NODATA" : getPiece().pieceToString();

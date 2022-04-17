@@ -1,6 +1,7 @@
 
 import sub.Chessboard;
 import sub.Move;
+import sub.Piece;
 import sub.Square;
 
 import java.util.Scanner;
@@ -24,7 +25,7 @@ public class Chess{
                 String fileRankFrom = input.nextLine();
                 if(fileRankFrom.equals("end")) break;
                 if(fileRankFrom.equals("print")){
-                    move.print();
+                    System.out.println(move.toString());
                     continue;
                 }
                 if(fileRankFrom.equals("back")){
@@ -70,7 +71,7 @@ public class Chess{
         System.out.println("/move1 = "+move1+"/move2 = "+move2);
         chessboard.print();
     }
-/*
+
     public static void testKing(Move move){
         Chessboard chessboard = move.getChessboard();
         //
@@ -298,5 +299,5 @@ public class Chess{
         System.out.println("/move2 = "+move2+"/move3 = "+move3+"/move4 = "+move4+"/move5 = "+move5+"/move6 = "+move6+"/move7 = "+move7);
         chessboard.print();
     }
-*/
+
 }

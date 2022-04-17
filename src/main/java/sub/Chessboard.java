@@ -1,43 +1,50 @@
 package sub;
 
+import java.util.HashSet;
+
 public class Chessboard{
 
     private Square[][] squares;
-    // probably should create list of existing pieces
     //
-    private final String white = "w";
-    private final String black = "b";
-    private final String rook = "R";
-    private final String knight = "N";
-    private final String bishop = "B";
-    private final String queen = "Q";
-    private final String king = "K";
-    private final String pawn = "P";
-    private final String nullName = " ";
+    private HashSet<Square> whitePieces;
+    private HashSet<Square> blackPieces;
     //
-    private final String rookWhite = "\u2656";
-    private final String knightWhite = "\u2658";
-    private final String bishopWhite = "\u2657";
-    private final String queenWhite = "\u2655";
-    private final String kingWhite = "\u2654";
-    private final String pawnWhite = "\u2659";
-    private final String rookBlack = "\u265C";
-    private final String knightBlack = "\u265E";
-    private final String bishopBlack = "\u265D";
-    private final String queenBlack = "\u265B";
-    private final String kingBlack = "\u265A";
-    private final String pawnBlack = "\u265F";
-    private final String nullSymbol = "\u3007";
+    private final String WHITE = "w";
+    private final String BLACK = "b";
+    //
+    private final String ROOK = "R";
+    private final String KNIGHT = "N";
+    private final String BISHOP = "B";
+    private final String QUEEN = "Q";
+    private final String KING = "K";
+    private final String PAWN = "P";
+    private final String NULL_NAME = " ";
+    //
+    private final String ROOK_WHITE = "\u2656";
+    private final String KNIGHT_WHITE = "\u2658";
+    private final String BISHOP_WHITE = "\u2657";
+    private final String QUEEN_WHITE = "\u2655";
+    private final String KING_WHITE = "\u2654";
+    private final String PAWN_WHITE = "\u2659";
+    private final String ROOK_BLACK = "\u265C";
+    private final String KNIGHT_BLACK = "\u265E";
+    private final String BISHOP_BLACK = "\u265D";
+    private final String QUEEN_BLACK = "\u265B";
+    private final String KING_BLACK = "\u265A";
+    private final String PAWN_BLACK = "\u265F";
+    private final String NULL_SYMBOL = "\u3007";
 
     public Chessboard(){
         this.squares = new Square[8][8];
+        this.whitePieces = new HashSet<>();
+        this.blackPieces = new HashSet<>();
         setSquares();
     }
 
     // GET
 
     public Square[][] getSquares(){
-        return this.squares;
+        return squares;
     }
 
     public Square getSquare(int positionX, int positionY){
@@ -54,40 +61,48 @@ public class Chessboard{
         return null;
     }
 
+    public HashSet<Square> getWhitePieces() {
+        return whitePieces;
+    }
+
+    public HashSet<Square> getBlackPieces() {
+        return blackPieces;
+    }
+
     public String getStringWhite(){
-        return white;
+        return WHITE;
     }
 
     public String getStringBlack(){
-        return black;
+        return BLACK;
     }
 
     public String getStringRook(){
-        return rook;
+        return ROOK;
     }
 
     public String getStringKnight(){
-        return knight;
+        return KNIGHT;
     }
 
     public String getStringBishop(){
-        return bishop;
+        return BISHOP;
     }
 
     public String getStringQueen(){
-        return queen;
+        return QUEEN;
     }
 
     public String getStringKing(){
-        return king;
+        return KING;
     }
 
     public String getStringPawn(){
-        return pawn;
+        return PAWN;
     }
 
     public String getStringNullName(){
-        return nullName;
+        return NULL_NAME;
     }
 
     // SET
@@ -96,58 +111,37 @@ public class Chessboard{
         for(int i=1; i<=8; i++){
             for(int j=1; j<=8; j++){
                 String pieceName = "";
-                String pieceSymbol = nullSymbol;
+                String pieceSymbol = NULL_SYMBOL;
                 if(i==1 || i==8){
                     if(j==1 || j==8){
-                        pieceName = rook;
-                        pieceSymbol = i==1 ? rookWhite : rookBlack;
+                        pieceName = ROOK;
+                        pieceSymbol = i==1 ? ROOK_WHITE : ROOK_BLACK;
                     } else if(j==2 || j==7){
-                        pieceName = knight;
-                        pieceSymbol = i==1 ? knightWhite : knightBlack;
+                        pieceName = KNIGHT;
+                        pieceSymbol = i==1 ? KNIGHT_WHITE : KNIGHT_BLACK;
                     } else if(j==3 || j==6){
-                        pieceName = bishop;
-                        pieceSymbol = i==1 ? bishopWhite : bishopBlack;
+                        pieceName = BISHOP;
+                        pieceSymbol = i==1 ? BISHOP_WHITE : BISHOP_BLACK;
                     } else if(j==4){
-                        pieceName = queen;
-                        pieceSymbol = i==1 ? queenWhite : queenBlack;
+                        pieceName = QUEEN;
+                        pieceSymbol = i==1 ? QUEEN_WHITE : QUEEN_BLACK;
                     } else if(j==5){
-                        pieceName = king;
-                        pieceSymbol = i==1 ? kingWhite : kingBlack;
+                        pieceName = KING;
+                        pieceSymbol = i==1 ? KING_WHITE : KING_BLACK;
                     }
-                    /*switch(j){
-                        case(1):
-                        case(8):
-                            pieceName = rook;
-                            pieceSymbol = i==1 ? rookWhite : rookBlack;
-                            break;
-                        case(2):
-                        case(7):
-                            pieceName = knight;
-                            pieceSymbol = i==1 ? knightWhite : knightBlack;
-                            break;
-                        case(3):
-                        case(6):
-                            pieceName = bishop;
-                            pieceSymbol = i==1 ? bishopWhite : bishopBlack;
-                            break;
-                        case(4):
-                            pieceName = queen;
-                            pieceSymbol = i==1 ? queenWhite : queenBlack;
-                            break;
-                        case(5):
-                            pieceName = king;
-                            pieceSymbol = i==1 ? kingWhite : kingBlack;
-                            break;
-                    }*/
                 }
                 if(i==2 || i==7){
-                    pieceName = pawn;
-                    pieceSymbol = i==2 ? pawnWhite : pawnBlack;
+                    pieceName = PAWN;
+                    pieceSymbol = i==2 ? PAWN_WHITE : PAWN_BLACK;
                 }
                 Piece piece = null;
-                if(i<=2) piece = new Piece(pieceName, white, pieceSymbol);
-                if(i>=7) piece = new Piece(pieceName, black, pieceSymbol);
-                squares[i-1][j-1] = new Square(j, i, (i+j)%2==0 ? black : white, piece);
+                if(i<=2) piece = new Piece(pieceName, WHITE, pieceSymbol);
+                if(i>=7) piece = new Piece(pieceName, BLACK, pieceSymbol);
+                String squareColor = (i+j)%2==0 ? BLACK : WHITE;
+                Square square = new Square(j, i, squareColor, piece);
+                squares[i-1][j-1] = square;
+                if(i<=2) whitePieces.add(square);
+                if(i>=7) blackPieces.add(square);
             }
         }
     }
@@ -161,7 +155,7 @@ public class Chessboard{
             for(int j = 1; j <= 8; j++){
                 Square square = getSquares()[i-1][j-1];
                 Piece piece = square.getPiece();
-                row += "[" + (piece == null ? nullSymbol : piece.getSymbol()) + "]";
+                row += "[" + (piece == null ? NULL_SYMBOL : piece.getSymbol()) + "]";
             }
             row += "["+i+"]";
             System.out.println(row);

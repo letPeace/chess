@@ -4,24 +4,18 @@ import java.util.ArrayList;
 
 public class Move{
 
-    private class SquarePair extends Square{
+    private class SquarePair{
         private Square squareFrom;
         private Square squareTo;
 
         public SquarePair(SquarePair squarePair){
-            Square squareFrom = squarePair.getSquareFrom();
-            Square squareTo = squarePair.getSquareTo();
-            Square squareFromClone = new Square(squareFrom.getPositionX(), squareFrom.getPositionY(), squareFrom.getColor(), squareFrom.getPiece());
-            Square squareToClone = new Square(squareTo.getPositionX(), squareTo.getPositionY(), squareTo.getColor(), squareTo.getPiece());
-            setSquareFrom(squareFromClone);
-            setSquareTo(squareToClone);
+            setSquareFrom(squarePair.getSquareFrom().clone());
+            setSquareTo(squarePair.getSquareTo().clone());
         }
 
         public SquarePair(Square squareFrom, Square squareTo){
-            Square squareFromClone = new Square(squareFrom.getPositionX(), squareFrom.getPositionY(), squareFrom.getColor(), squareFrom.getPiece());
-            Square squareToClone = new Square(squareTo.getPositionX(), squareTo.getPositionY(), squareTo.getColor(), squareTo.getPiece());
-            setSquareFrom(squareFromClone);
-            setSquareTo(squareToClone);
+            setSquareFrom(squareFrom.clone());
+            setSquareTo(squareTo.clone());
         }
 
         public void setSquareFrom(Square squareFrom){
@@ -32,11 +26,20 @@ public class Move{
         }
 
         public Square getSquareFrom(){
-            return this.squareFrom;
+            return squareFrom;
         }
         public Square getSquareTo(){
-            return this.squareTo;
+            return squareTo;
         }
+
+        @Override
+        public String toString() {
+            return "SquarePair{" +
+                    "squareFrom=" + squareFrom +
+                    ", squareTo=" + squareTo +
+                    '}';
+        }
+
     }
 
     private ArrayList<SquarePair> squarePairArrayList;
@@ -117,7 +120,7 @@ public class Move{
 
     // checkmate
 
-    private boolean givesCheck(final Square square){ // does square.getPiece() place the opposite king in check ?
+    private boolean placesInCheck(final Square square){ // does square.getPiece() place the opposite king in check ?
         String pieceColor = square.getPiece().getColor();
         String kingColor = pieceColor.equals(chessboard.getStringWhite()) ? chessboard.getStringBlack() : chessboard.getStringWhite();
         Square squareKing = chessboard.getSquare(new Piece(chessboard.getStringKing(), kingColor));
@@ -132,7 +135,7 @@ public class Move{
                 Square squareChecking = chessboard.getSquare(j, i);
                 Piece pieceChecking = squareChecking.getPiece();
                 if(pieceChecking == null || pieceColor.equals(pieceChecking.getColor())) continue;
-                if(givesCheck(squareChecking)) squaresPlacingKingInCheck.add(squareChecking);
+                if(placesInCheck(squareChecking)) squaresPlacingKingInCheck.add(squareChecking);
             }
         }
         if(squaresPlacingKingInCheck.isEmpty()) return null;
@@ -223,7 +226,7 @@ public class Move{
         return false;
     }
 
-    public boolean emptySquaresBetween(final Square squareFrom, final Square squareTo){
+    private boolean emptySquaresBetween(final Square squareFrom, final Square squareTo){
         int positionXFrom = squareFrom.getPositionX();
         int positionYFrom = squareFrom.getPositionY();
         int positionXTo = squareTo.getPositionX();
@@ -267,6 +270,13 @@ public class Move{
 
     public void printLastMove(){
         System.out.println("Last move: ["+getLastMove().getSquareFrom().squareInfo()+"]["+getLastMove().getSquareTo().squareInfo()+"]");
+    }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "squarePairArrayList=" + squarePairArrayList +
+                '}';
     }
 
 }
