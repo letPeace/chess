@@ -74,7 +74,7 @@ public class Square implements Cloneable{
         square.setPositionX(this.getPositionX());
         square.setPositionY(this.getPositionY());
         square.setColor(this.getColor());
-        square.setPiece(this.getPiece() == null ? null : this.getPiece().clone());
+        square.setPiece(squareIsEmpty() ? null : this.getPiece().clone());
         return square;
     }
 
@@ -101,7 +101,13 @@ public class Square implements Cloneable{
                 "}\n";
     }
 
-    // print
+    // extra
+
+    public boolean squareIsEmpty(){
+        return getPiece() == null;
+    }
+
+    public void deletePiece(){setPiece(null);}
 
     public void print(){
         String pieceString = getPiece() == null ? "NODATA" : getPiece().pieceToString();
@@ -109,7 +115,7 @@ public class Square implements Cloneable{
     }
 
     public String squareInfo(){
-        return getPositionX()+" "+getPositionY()+" "+(getPiece() == null ? "NODATA" : getPiece().pieceToString());
+        return getPositionX()+" "+getPositionY()+" "+(squareIsEmpty() ? "NODATA" : getPiece().pieceToString());
     }
 
 }

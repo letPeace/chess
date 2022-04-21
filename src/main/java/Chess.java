@@ -1,7 +1,6 @@
 
 import sub.Chessboard;
 import sub.Move;
-import sub.Piece;
 import sub.Square;
 
 import java.util.Scanner;
@@ -9,9 +8,12 @@ import java.util.Scanner;
 public class Chess{
 
     public static void main(String[] args){
-        Move move = new Move();
+        Scanner input = new Scanner(System.in);
+        Move move = new Move(input);
         Chessboard chessboard = move.getChessboard();
         chessboard.print();
+//        testCapture(move);
+//        testPromoting(move);
 //        testPawn(move);
 //        testRook(move);
 //        testKnight(move);
@@ -19,7 +21,6 @@ public class Chess{
 //        testQueen(move);
 //        testKing(move);
 //        testCheck(move);
-        Scanner input = new Scanner(System.in);
         while(true){
             try{
                 String fileRankFrom = input.nextLine();
@@ -52,6 +53,98 @@ public class Chess{
         input.close();
     }
 
+    public static void testCapture(Move move){
+        Chessboard chessboard = move.getChessboard();
+        //
+        Square cell = chessboard.getSquare(3,2);
+        Square cell1 = chessboard.getSquare(3,4);
+        boolean moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(2,8);
+        cell1 = chessboard.getSquare(1,6);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(3,4);
+        cell1 = chessboard.getSquare(3,5);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(2,7);
+        cell1 = chessboard.getSquare(2,5);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(3,5);
+        cell1 = chessboard.getSquare(2,6);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+    }
+
+    public static void testPromoting(Move move){
+        Chessboard chessboard = move.getChessboard();
+        //
+        Square cell = chessboard.getSquare(3,2);
+        Square cell1 = chessboard.getSquare(3,4);
+        boolean moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(4,7);
+        cell1 = chessboard.getSquare(4,5);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(3,4);
+        cell1 = chessboard.getSquare(4,5);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(3,7);
+        cell1 = chessboard.getSquare(3,6);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(4,5);
+        cell1 = chessboard.getSquare(3,6);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(3,8);
+        cell1 = chessboard.getSquare(4,7);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(3,6);
+        cell1 = chessboard.getSquare(3,7);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(4,7);
+        cell1 = chessboard.getSquare(1,4);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+        //
+        cell = chessboard.getSquare(3,7);
+        cell1 = chessboard.getSquare(3,8);
+        moveSuccess = move.move(cell, cell1);
+        System.out.println("moveSuccess = "+moveSuccess);
+        chessboard.print();
+    }
+/*
     public static void testCheck(Move move){
         Chessboard chessboard = move.getChessboard();
         //
@@ -299,5 +392,5 @@ public class Chess{
         System.out.println("/move2 = "+move2+"/move3 = "+move3+"/move4 = "+move4+"/move5 = "+move5+"/move6 = "+move6+"/move7 = "+move7);
         chessboard.print();
     }
-
+*/
 }
