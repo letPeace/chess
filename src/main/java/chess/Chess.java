@@ -1,17 +1,20 @@
+package chess;
 
-import sub.Chessboard;
-import sub.Move;
-import sub.Square;
-
-import java.util.Scanner;
+import sub.chessboard.Chessboard;
+import sub.chessboard.Square;
+import sub.enums.Color;
+import sub.exceptions.MovesSequenceIsEmptyException;
+import sub.move.Move;
+import sub.move.MovesSequence;
+import sub.scanner.Console;
 
 public class Chess{
 
     public static void main(String[] args){
-        Scanner input = new Scanner(System.in);
-        Move move = new Move(input);
-        Chessboard chessboard = move.getChessboard();
-        chessboard.print();
+        System.out.println(Color.WHITE.getColor());
+//        Scanner input = new Scanner(System.in);
+        Move move = new Move(Console.getInput());
+        Chessboard.print();
 //        testCapture(move);
 //        testPromoting(move);
 //        testPawn(move);
@@ -23,36 +26,42 @@ public class Chess{
 //        testCheck(move);
         while(true){
             try{
-                String fileRankFrom = input.nextLine();
+                String fileRankFrom = Console.getInput().nextLine();
                 if(fileRankFrom.equals("end")) break;
                 if(fileRankFrom.equals("print")){
-                    System.out.println(move.toString());
+                    System.out.println(move);
                     continue;
                 }
                 if(fileRankFrom.equals("back")){
-                    if(move.moveBack()) chessboard.print();
+                    if(move.moveBack()) Chessboard.print();
                     else System.out.println("impossible to move back");
+                    continue;
+                }
+                if(fileRankFrom.equals("last")){
+                    System.out.println(MovesSequence.getLastMove());
                     continue;
                 }
                 int xFrom = fileRankFrom.charAt(0) - 'a' + 1;
                 int yFrom = fileRankFrom.charAt(1) - '0';
-                Square cellFrom = chessboard.getSquare(xFrom, yFrom);
+                Square cellFrom = Chessboard.getSquare(xFrom, yFrom);
                 //
-                String fileRankTo = input.nextLine();
+                String fileRankTo = Console.getInput().nextLine();
                 int xTo = fileRankTo.charAt(0) - 'a' + 1;
                 int yTo = fileRankTo.charAt(1) - '0';
-                Square cellTo = chessboard.getSquare(xTo, yTo);
+                Square cellTo = Chessboard.getSquare(xTo, yTo);
                 //
                 boolean isMoveSuccessful = move.move(cellFrom, cellTo);
                 System.out.println("["+xFrom+","+yFrom+"] -> ["+xTo+","+yTo+"] = "+isMoveSuccessful);
-                chessboard.print();
+                Chessboard.print();
+            } catch(MovesSequenceIsEmptyException e){
+                System.out.println(e.getMessage());
             } catch(Exception e){
                 e.printStackTrace();
             }
         }
-        input.close();
+        Console.getInput().close();
     }
-
+/*
     public static void testCapture(Move move){
         Chessboard chessboard = move.getChessboard();
         //
@@ -144,7 +153,7 @@ public class Chess{
         System.out.println("moveSuccess = "+moveSuccess);
         chessboard.print();
     }
-/*
+
     public static void testCheck(Move move){
         Chessboard chessboard = move.getChessboard();
         //
