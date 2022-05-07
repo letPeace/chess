@@ -6,7 +6,7 @@ public class Square implements Cloneable{
 
     private int positionX;
     private int positionY;
-    private String color;
+    private Color color;
     private Piece piece;
 
     public Square(){
@@ -17,13 +17,13 @@ public class Square implements Cloneable{
         setPiece(piece);
     }
 
-    public Square(int positionX, int positionY, String color){
+    public Square(int positionX, int positionY, Color color){
         setPositionX(positionX);
         setPositionY(positionY);
         setColor(color);
     }
 
-    public Square(int positionX, int positionY, String color, Piece piece){
+    public Square(int positionX, int positionY, Color color, Piece piece){
         setPositionX(positionX);
         setPositionY(positionY);
         setColor(color);
@@ -40,7 +40,7 @@ public class Square implements Cloneable{
         this.positionY = positionY;
     }
 
-    public void setColor(String color){
+    public void setColor(Color color){
         this.color = color;
     }
 
@@ -58,7 +58,7 @@ public class Square implements Cloneable{
         return positionY;
     }
 
-    public String getColor(){
+    public Color getColor(){
         return color;
     }
 
@@ -70,12 +70,7 @@ public class Square implements Cloneable{
 
     @Override
     public Square clone(){
-        Square square = new Square();
-        square.setPositionX(this.getPositionX());
-        square.setPositionY(this.getPositionY());
-        square.setColor(this.getColor());
-        square.setPiece(squareIsEmpty() ? null : this.getPiece().clone());
-        return square;
+        return new Square(positionX, positionY, color, piece);
     }
 
     @Override
@@ -96,7 +91,7 @@ public class Square implements Cloneable{
         return "Square{" +
                 "positionX=" + positionX +
                 ", positionY=" + positionY +
-                ", color='" + color + '\'' +
+                ", color=" + color +
                 ", piece=" + piece +
                 "}\n";
     }

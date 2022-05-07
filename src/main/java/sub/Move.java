@@ -35,9 +35,9 @@ public class Move{
 
         @Override
         public String toString() {
-            return "SquarePair{" +
+            return "SquarePair{\n" +
                     "squareFrom=" + squareFrom +
-                    ", squareTo=" + squareTo +
+                    "squareTo=" + squareTo +
                     '}';
         }
 
@@ -45,8 +45,8 @@ public class Move{
 
     private ArrayList<SquarePair> squarePairArrayList;
     private Chessboard chessboard;
-    private String turn;
-    private Scanner input; // temporary variable
+    private Color turn;
+    private final Scanner input; // temporary variable
 
     public Move(Scanner input){
         this.input = input;
@@ -74,18 +74,16 @@ public class Move{
     }
 
     public void setTurn(){
-        this.turn = getChessboard().getStringWhite();
+        this.turn = Color.WHITE;
     }
 
-    public void setTurn(String turn){
+    public void setTurn(Color turn){
         this.turn = turn;
     }
 
     public void setOppositeTurn(){
-        String white = chessboard.getStringWhite();
-        String black = chessboard.getStringBlack();
-        if (turn.equals(white)) setTurn(black);
-        else setTurn(white);
+        if (turn == Color.WHITE) setTurn(Color.BLACK);
+        else setTurn(Color.WHITE);
     }
 
     // GET
@@ -98,7 +96,7 @@ public class Move{
         return chessboard;
     }
 
-    public String getTurn(){
+    public Color getTurn(){
         return turn;
     }
 
@@ -125,15 +123,15 @@ public class Move{
     // checkmate
 
     private boolean placesInCheck(final Square square){ // does square.getPiece() place the opposite king in check ?
-        String pieceColor = square.getPiece().getColor();
-        String kingColor = pieceColor.equals(chessboard.getStringWhite()) ? chessboard.getStringBlack() : chessboard.getStringWhite();
-        Square squareKing = chessboard.getSquare(new Piece(chessboard.getStringKing(), kingColor));
+        Color pieceColor = square.getPiece().getColor();
+        Color kingColor = pieceColor == Color.WHITE ? Color.BLACK : Color.WHITE;
+        Square squareKing = chessboard.getSquare(new Piece(PieceName.KING, kingColor));
         return isMoveAvailable(square, squareKing) && emptySquaresBetween(square, squareKing);
     }
 
     private ArrayList<Square> placedInCheckBy(final Square square){ // square.getPiece() has just moved, so we have to check if its king is in check
         ArrayList<Square> squaresPlacingKingInCheck = new ArrayList<>();
-        String pieceColor = square.getPiece().getColor();
+        Color pieceColor = square.getPiece().getColor();
         for(int i=1; i<=8; i++){ // it might be optimized
             for(int j=1; j<=8; j++){
                 Square squareChecking = chessboard.getSquare(j, i);
@@ -156,9 +154,10 @@ public class Move{
             boolean pawnCanCaptureInPassing = pawnCanCaptureInPassing(squareFrom, squareTo);
             Square squareCheck = squareFrom.clone();
             if(!pawnCanCaptureInPassing && pawnReachesBackRank(squareFrom, squareTo)){ // check if pawn reaches back rank
-                String pieceName = choicePieceName();
-                String pieceColor = squareFrom.getPiece().getColor();
-                String pieceSymbol = chessboard.getSymbolByNameAndColor(pieceName, pieceColor);
+                PieceName pieceName = choicePieceName();
+                Color pieceColor = squareFrom.getPiece().getColor();
+                PieceSymbol pieceSymbol = chessboard.getSymbolByNameAndColor(pieceName, pieceColor);
+                System.out.println(pieceSymbol);
                 replace(squareFrom, squareTo);
                 Square squareFromNew = squareTo.clone();
                 Piece newPiece = squareFromNew.getPiece();
@@ -186,7 +185,7 @@ public class Move{
         return false; // move is incorrect
     }
 
-    private void replace(Square squareFrom, Square squareTo){
+    private void replace(final Square squareFrom, final Square squareTo){
         addSquarePair(squareFrom, squareTo);
         squareTo.setPiece(squareFrom.getPiece());
         squareFrom.deletePiece();
@@ -211,12 +210,12 @@ public class Move{
         }
     }
 
-    private boolean pawnCanCaptureInPassing(Square squareFrom, Square squareTo){
+    private boolean pawnCanCaptureInPassing(final Square squareFrom, final Square squareTo){
         try {
             Square squareToLast = chessboard.getSquare(getLastMove().getSquareTo());
-            if(!squareToLast.getPiece().getName().equals(chessboard.getStringPawn())) return false;
+            if(squareToLast.getPiece().getName() != PieceName.PAWN) return false;
             Square squareFromLast = chessboard.getSquare(getLastMove().getSquareFrom());
-            boolean pawnIsWhite = squareFrom.getPiece().getColor().equals(chessboard.getStringWhite());
+            boolean pawnIsWhite = squareFrom.getPiece().getColor() == Color.WHITE;
             int directionFactor = pawnIsWhite ? -1 : 1;
             boolean oppositePawnPassed = squareToLast.getPositionY() - squareFromLast.getPositionY() == 2*directionFactor;
             boolean pawnCanCapture = (squareTo.getPositionX() == squareFromLast.getPositionX()) && (squareTo.getPositionY() == squareFromLast.getPositionY() + directionFactor);
@@ -238,16 +237,14 @@ public class Move{
         }
     }
 
-    private String choicePieceName(){
+    private PieceName choicePieceName(){
         while(true){
             try{
-                String pieceName = input.nextLine();
-                boolean pawnNameEqualsRook = pieceName.equals(chessboard.getStringRook());
-                boolean pawnNameEqualsKnight = pieceName.equals(chessboard.getStringKnight());
-                boolean pawnNameEqualsBishop = pieceName.equals(chessboard.getStringBishop());
-                boolean pawnNameEqualsQueen = pieceName.equals(chessboard.getStringQueen());
-                boolean pieceNameCorrect = pawnNameEqualsRook || pawnNameEqualsKnight || pawnNameEqualsBishop || pawnNameEqualsQueen;
-                if(pieceNameCorrect) return pieceName;
+                String pieceName = input.nextLine(); // trim ?
+                if(pieceName.equals(PieceName.ROOK.getName())) return PieceName.ROOK;
+                if(pieceName.equals(PieceName.KNIGHT.getName())) return PieceName.KNIGHT;
+                if(pieceName.equals(PieceName.BISHOP.getName())) return PieceName.BISHOP;
+                if(pieceName.equals(PieceName.QUEEN.getName())) return PieceName.QUEEN;
                 System.out.println("Enter an correct name of piece!");
             } catch(Exception e){
                 e.printStackTrace();
@@ -257,7 +254,7 @@ public class Move{
 
     private boolean pawnReachesBackRank(final Square squareFrom, final Square squareTo){
         Piece pieceFrom = squareFrom.getPiece();
-        if(!pieceFrom.getName().equals(chessboard.getStringPawn())) return false;
+        if(pieceFrom.getName() != PieceName.PAWN) return false;
         // check for Color is unnecessary as it would be impossible to reach 8 rank being black and 1 rank being white
         return (squareFrom.getPositionY() == 7 && squareTo.getPositionY() == 8 || squareFrom.getPositionY() == 2 && squareTo.getPositionY() == 1);
     }
@@ -275,16 +272,16 @@ public class Move{
         //
         int positionXFrom = squareFrom.getPositionX();
         int positionYFrom = squareFrom.getPositionY();
-        String pieceFromName = pieceFrom.getName();
-        String colorFrom = pieceFrom.getColor();
+        PieceName pieceFromName = pieceFrom.getName();
+        Color colorFrom = pieceFrom.getColor();
         //
         int positionXTo = squareTo.getPositionX();
         int positionYTo = squareTo.getPositionY();
         //
         // каждой фигуре сделать свой класс extends Square / Piece ???
         // чтобы у них был метод isMoveAvailable
-        if(pieceFromName.equals(chessboard.getStringPawn())){ // PAWN
-            boolean pawnIsWhite = colorFrom.equals(chessboard.getStringWhite());
+        if(pieceFromName == PieceName.PAWN){ // PAWN
+            boolean pawnIsWhite = colorFrom == Color.WHITE;
             //
             boolean whitePawnCanMoveForward = pawnIsWhite && (positionYFrom == 2 && (positionYTo - positionYFrom) == 2 || (positionYTo - positionYFrom) == 1);
             boolean blackPawnCanMoveForward = !pawnIsWhite && (positionYFrom == 7 && (positionYTo - positionYFrom) == -2 || (positionYTo - positionYFrom) == -1);
@@ -297,20 +294,20 @@ public class Move{
             boolean pawnCanCaptureInPassing = pawnCanCaptureInPassing(squareFrom, squareTo);
             //
             return pawnCanMoveForward || pawnCanCapture || pawnCanCaptureInPassing;
-        } else if(pieceFromName.equals(chessboard.getStringRook())){ // ROOK
+        } else if(pieceFromName == PieceName.ROOK){ // ROOK
             return positionXFrom == positionXTo || positionYFrom == positionYTo;
-        } else if(pieceFromName.equals(chessboard.getStringKnight())){ // KNIGHT
+        } else if(pieceFromName == PieceName.KNIGHT){ // KNIGHT
             boolean verticalHorizontal = Math.abs(positionXFrom - positionXTo) == 1 && Math.abs(positionYFrom - positionYTo) == 2;
             boolean horizontalVertical = Math.abs(positionXFrom - positionXTo) == 2 && Math.abs(positionYFrom - positionYTo) == 1;
             return verticalHorizontal || horizontalVertical;
-        } else if(pieceFromName.equals(chessboard.getStringBishop())){ // BISHOP
+        } else if(pieceFromName == PieceName.BISHOP){ // BISHOP
             return Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo);
-        } else if(pieceFromName.equals(chessboard.getStringQueen())){ // QUEEN
+        } else if(pieceFromName == PieceName.QUEEN){ // QUEEN
             boolean horizontal = positionXFrom == positionXTo;
             boolean vertical = positionYFrom == positionYTo;
             boolean diagonal = Math.abs(positionXFrom - positionXTo) == Math.abs(positionYFrom - positionYTo);
             return horizontal || vertical || diagonal;
-        } else if(pieceFromName.equals(chessboard.getStringKing())){ // KING
+        } else if(pieceFromName == PieceName.KING){ // KING
             return Math.abs(positionXFrom - positionXTo) <= 1 && Math.abs(positionYFrom - positionYTo) <= 1;
         }
         return false;
@@ -368,8 +365,7 @@ public class Move{
 
     @Override
     public String toString() {
-        return "Move{" +
-                "squarePairArrayList=" + squarePairArrayList +
+        return "squarePairArrayList{" + squarePairArrayList +
                 '}';
     }
 

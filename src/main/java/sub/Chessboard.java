@@ -5,34 +5,8 @@ import java.util.HashSet;
 public class Chessboard{
 
     private final Square[][] squares;
-    //
     private final HashSet<Square> whitePieces;
     private final HashSet<Square> blackPieces;
-    //
-    private final String WHITE = "w";
-    private final String BLACK = "b";
-    //
-    private final String ROOK = "R"; // it must not be here -> in Piece ???
-    private final String KNIGHT = "N";
-    private final String BISHOP = "B";
-    private final String QUEEN = "Q";
-    private final String KING = "K";
-    private final String PAWN = "P";
-    private final String NULL_NAME = " ";
-    //
-    private final String ROOK_WHITE = "\u2656";
-    private final String KNIGHT_WHITE = "\u2658";
-    private final String BISHOP_WHITE = "\u2657";
-    private final String QUEEN_WHITE = "\u2655";
-    private final String KING_WHITE = "\u2654";
-    private final String PAWN_WHITE = "\u2659";
-    private final String ROOK_BLACK = "\u265C";
-    private final String KNIGHT_BLACK = "\u265E";
-    private final String BISHOP_BLACK = "\u265D";
-    private final String QUEEN_BLACK = "\u265B";
-    private final String KING_BLACK = "\u265A";
-    private final String PAWN_BLACK = "\u265F";
-    private final String NULL_SYMBOL = "\u3007";
 
     public Chessboard(){
         this.squares = new Square[8][8];
@@ -73,109 +47,21 @@ public class Chessboard{
         return blackPieces;
     }
 
-    public String getStringWhite(){
-        return WHITE;
-    }
-
-    public String getStringBlack(){
-        return BLACK;
-    }
-
-    public String getStringRook(){
-        return ROOK;
-    }
-
-    public String getStringKnight(){
-        return KNIGHT;
-    }
-
-    public String getStringBishop(){
-        return BISHOP;
-    }
-
-    public String getStringQueen(){
-        return QUEEN;
-    }
-
-    public String getStringKing(){
-        return KING;
-    }
-
-    public String getStringPawn(){
-        return PAWN;
-    }
-
-    public String getStringNullName(){
-        return NULL_NAME;
-    }
-
-    public String getROOK_WHITE() {
-        return ROOK_WHITE;
-    }
-
-    public String getKNIGHT_WHITE() {
-        return KNIGHT_WHITE;
-    }
-
-    public String getBISHOP_WHITE() {
-        return BISHOP_WHITE;
-    }
-
-    public String getQUEEN_WHITE() {
-        return QUEEN_WHITE;
-    }
-
-    public String getKING_WHITE() {
-        return KING_WHITE;
-    }
-
-    public String getPAWN_WHITE() {
-        return PAWN_WHITE;
-    }
-
-    public String getROOK_BLACK() {
-        return ROOK_BLACK;
-    }
-
-    public String getKNIGHT_BLACK() {
-        return KNIGHT_BLACK;
-    }
-
-    public String getBISHOP_BLACK() {
-        return BISHOP_BLACK;
-    }
-
-    public String getQUEEN_BLACK() {
-        return QUEEN_BLACK;
-    }
-
-    public String getKING_BLACK() {
-        return KING_BLACK;
-    }
-
-    public String getPAWN_BLACK() {
-        return PAWN_BLACK;
-    }
-
-    public String getNULL_SYMBOL() {
-        return NULL_SYMBOL;
-    }
-
-    public String getSymbolByNameAndColor(String pieceName, String pieceColor){
-        if(pieceColor.equals(getStringWhite())){
-            if(pieceName.equals(getStringPawn())) return getPAWN_WHITE();
-            if(pieceName.equals(getStringRook())) return getROOK_WHITE();
-            if(pieceName.equals(getStringKnight())) return getKNIGHT_WHITE();
-            if(pieceName.equals(getStringBishop())) return getBISHOP_WHITE();
-            if(pieceName.equals(getStringQueen())) return getQUEEN_WHITE();
-        } else if (pieceColor.equals(getStringBlack())){
-            if(pieceName.equals(getStringPawn())) return getPAWN_BLACK();
-            if(pieceName.equals(getStringRook())) return getROOK_BLACK();
-            if(pieceName.equals(getStringKnight())) return getKNIGHT_BLACK();
-            if(pieceName.equals(getStringBishop())) return getBISHOP_BLACK();
-            if(pieceName.equals(getStringQueen())) return getQUEEN_BLACK();
+    public PieceSymbol getSymbolByNameAndColor(PieceName pieceName, Color pieceColor){
+        if(pieceColor == Color.WHITE){
+            if(pieceName == PieceName.PAWN) return PieceSymbol.PAWN_WHITE;
+            if(pieceName == PieceName.ROOK) return PieceSymbol.ROOK_WHITE;
+            if(pieceName == PieceName.KNIGHT) return PieceSymbol.KNIGHT_WHITE;
+            if(pieceName == PieceName.BISHOP) return PieceSymbol.BISHOP_WHITE;
+            if(pieceName == PieceName.QUEEN) return PieceSymbol.QUEEN_WHITE;
+        } else if(pieceColor == Color.BLACK){
+            if(pieceName == PieceName.PAWN) return PieceSymbol.PAWN_BLACK;
+            if(pieceName == PieceName.ROOK) return PieceSymbol.ROOK_BLACK;
+            if(pieceName == PieceName.KNIGHT) return PieceSymbol.KNIGHT_BLACK;
+            if(pieceName == PieceName.BISHOP) return PieceSymbol.BISHOP_BLACK;
+            if(pieceName == PieceName.QUEEN) return PieceSymbol.QUEEN_BLACK;
         }
-        return getNULL_SYMBOL();
+        return PieceSymbol.EMPTY;
     }
 
     // SET
@@ -183,34 +69,34 @@ public class Chessboard{
     private void setSquares(){
         for(int i=1; i<=8; i++){
             for(int j=1; j<=8; j++){
-                String pieceName = "";
-                String pieceSymbol = NULL_SYMBOL;
+                PieceName pieceName = PieceName.EMPTY;
+                PieceSymbol pieceSymbol = PieceSymbol.EMPTY;
                 if(i==1 || i==8){
                     if(j==1 || j==8){
-                        pieceName = ROOK;
-                        pieceSymbol = i==1 ? ROOK_WHITE : ROOK_BLACK;
+                        pieceName = PieceName.ROOK;
+                        pieceSymbol = i==1 ? PieceSymbol.ROOK_WHITE : PieceSymbol.ROOK_BLACK;
                     } else if(j==2 || j==7){
-                        pieceName = KNIGHT;
-                        pieceSymbol = i==1 ? KNIGHT_WHITE : KNIGHT_BLACK;
+                        pieceName = PieceName.KNIGHT;
+                        pieceSymbol = i==1 ? PieceSymbol.KNIGHT_WHITE : PieceSymbol.KNIGHT_BLACK;
                     } else if(j==3 || j==6){
-                        pieceName = BISHOP;
-                        pieceSymbol = i==1 ? BISHOP_WHITE : BISHOP_BLACK;
+                        pieceName = PieceName.BISHOP;
+                        pieceSymbol = i==1 ? PieceSymbol.BISHOP_WHITE : PieceSymbol.BISHOP_BLACK;
                     } else if(j==4){
-                        pieceName = QUEEN;
-                        pieceSymbol = i==1 ? QUEEN_WHITE : QUEEN_BLACK;
+                        pieceName = PieceName.QUEEN;
+                        pieceSymbol = i==1 ? PieceSymbol.QUEEN_WHITE : PieceSymbol.QUEEN_BLACK;
                     } else if(j==5){
-                        pieceName = KING;
-                        pieceSymbol = i==1 ? KING_WHITE : KING_BLACK;
+                        pieceName = PieceName.KING;
+                        pieceSymbol = i==1 ? PieceSymbol.KING_WHITE : PieceSymbol.KING_BLACK;
                     }
                 }
                 if(i==2 || i==7){
-                    pieceName = PAWN;
-                    pieceSymbol = i==2 ? PAWN_WHITE : PAWN_BLACK;
+                    pieceName = PieceName.PAWN;
+                    pieceSymbol = i==2 ? PieceSymbol.PAWN_WHITE : PieceSymbol.PAWN_BLACK;
                 }
-                Piece piece = null;
-                if(i<=2) piece = new Piece(pieceName, WHITE, pieceSymbol);
-                if(i>=7) piece = new Piece(pieceName, BLACK, pieceSymbol);
-                String squareColor = (i+j)%2==0 ? BLACK : WHITE;
+                Piece piece = null; // is it ok?
+                if(i<=2) piece = new Piece(pieceName, Color.WHITE, pieceSymbol);
+                if(i>=7) piece = new Piece(pieceName, Color.BLACK, pieceSymbol);
+                Color squareColor = (i+j)%2==0 ? Color.BLACK : Color.WHITE;
                 Square square = new Square(j, i, squareColor, piece);
                 squares[i-1][j-1] = square;
                 if(i<=2) whitePieces.add(square);
@@ -228,7 +114,7 @@ public class Chessboard{
             for(int j = 1; j <= 8; j++){
                 Square square = getSquares()[i-1][j-1];
                 Piece piece = square.getPiece();
-                row += "[" + (square.squareIsEmpty() ? NULL_SYMBOL : piece.getSymbol()) + "]";
+                row += "[" + (square.squareIsEmpty() ? PieceSymbol.EMPTY.getSymbol() : piece.getSymbol().getSymbol()) + "]";
             }
             row += "["+i+"]";
             System.out.println(row);

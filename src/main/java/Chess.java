@@ -1,13 +1,12 @@
 
-import sub.Chessboard;
-import sub.Move;
-import sub.Square;
+import sub.*;
 
 import java.util.Scanner;
 
 public class Chess{
 
     public static void main(String[] args){
+        System.out.println(Color.WHITE.getColor());
         Scanner input = new Scanner(System.in);
         Move move = new Move(input);
         Chessboard chessboard = move.getChessboard();
@@ -26,12 +25,16 @@ public class Chess{
                 String fileRankFrom = input.nextLine();
                 if(fileRankFrom.equals("end")) break;
                 if(fileRankFrom.equals("print")){
-                    System.out.println(move.toString());
+                    System.out.println(move);
                     continue;
                 }
                 if(fileRankFrom.equals("back")){
                     if(move.moveBack()) chessboard.print();
                     else System.out.println("impossible to move back");
+                    continue;
+                }
+                if(fileRankFrom.equals("last")){
+                    System.out.println(move.getLastMove());
                     continue;
                 }
                 int xFrom = fileRankFrom.charAt(0) - 'a' + 1;

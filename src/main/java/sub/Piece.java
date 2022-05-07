@@ -4,62 +4,54 @@ import java.util.Objects;
 
 public class Piece implements Cloneable{
 
-    private String name;
-    private String color;
-    private String symbol;
+    private PieceName name = PieceName.EMPTY;
+    private Color color = Color.EMPTY;
+    private PieceSymbol symbol = PieceSymbol.EMPTY;
 
     public Piece(){
         //
     }
 
-    public Piece(String name, String color){
+    public Piece(PieceName name, Color color){
         setName(name);
         setColor(color);
     }
 
-    public Piece(String name, String color, String symbol){
+    public Piece(PieceName name, Color color, PieceSymbol symbol){
         setName(name);
         setColor(color);
         setSymbol(symbol);
     }
 
-    // SET
-
-    public void setName(String name){
-        this.name = name;
-    }
-
-    public void setColor(String color){
-        this.color = color;
-    }
-
-    public void setSymbol(String pieceSymbol){
-        this.symbol = pieceSymbol;
-    }
-
-    // GET
-
-    public String getName(){
+    public PieceName getName(){
         return name;
     }
 
-    public String getColor(){
+    public Color getColor(){
         return color;
     }
 
-    public String getSymbol(){
+    public PieceSymbol getSymbol(){
         return symbol;
+    }
+
+    public void setName(PieceName name){
+        this.name = name;
+    }
+
+    public void setColor(Color color){
+        this.color = color;
+    }
+
+    public void setSymbol(PieceSymbol symbol){
+        this.symbol = symbol;
     }
 
     // object methods
 
     @Override
     public Piece clone(){
-        Piece piece = new Piece();
-        piece.setName(this.getName());
-        piece.setColor(this.getColor());
-        piece.setSymbol(this.getSymbol());
-        return piece;
+        return new Piece(name, color, symbol);
     }
 
     @Override
