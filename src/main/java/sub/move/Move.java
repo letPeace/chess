@@ -10,36 +10,30 @@ import sub.enums.PieceSymbol;
 import sub.exceptions.MovesSequenceIsEmptyException;
 import sub.scanner.Console;
 
-import java.util.Scanner;
-
 public class Move{
 
-    private Color turn;
-
-    public Move(Scanner input){
-        this.turn = Color.WHITE;
-    }
+    private static Color turn = Color.WHITE;
 
     // SET
 
-    public void setTurn(Color turn){
-        this.turn = turn;
+    public static void setTurn(Color newTurn){
+        turn = newTurn;
     }
 
-    public void setOppositeTurn(){
+    public static void setOppositeTurn(){
         if (turn == Color.WHITE) setTurn(Color.BLACK);
         else setTurn(Color.WHITE);
     }
 
     // GET
 
-    public Color getTurn(){
+    public static Color getTurn(){
         return turn;
     }
 
     // move
 
-    public boolean move(final Square squareFrom, final Square squareTo){
+    public static boolean move(final Square squareFrom, final Square squareTo){
         if(squareFrom == null || squareTo == null) return false; // it is checked for NULL here, so it is not necessary to do it again
         boolean isMoveAvailable = Piece.isMoveCorrect(squareFrom, squareTo);
         boolean emptySquaresBetween = Chessboard.emptySquaresBetween(squareFrom, squareTo);
@@ -51,7 +45,6 @@ public class Move{
                 PieceName pieceName = Console.choicePieceName();
                 Color pieceColor = squareFrom.getPiece().getColor();
                 PieceSymbol pieceSymbol = Piece.getSymbolByNameAndColor(pieceName, pieceColor);
-                System.out.println(pieceSymbol);
                 replace(squareFrom, squareTo);
                 Square squareFromNew = squareTo.clone();
                 Piece newPiece = squareFromNew.getPiece();
@@ -84,13 +77,13 @@ public class Move{
         return false; // move is incorrect
     }
 
-    private void replace(final Square squareFrom, final Square squareTo){
+    private static void replace(final Square squareFrom, final Square squareTo){
         MovesSequence.addMoveToSequence(squareFrom, squareTo);
         squareTo.setPiece(squareFrom.getPiece());
         squareFrom.removePiece();
     }
 
-    public boolean moveBack(){
+    public static boolean moveBack(){
         try{
             if(Pawn.isPromoted()) MovesSequence.removeLastMove();
             Square squareFromLast = MovesSequence.getLastMove().getSquareFrom();
@@ -108,7 +101,7 @@ public class Move{
         }
     }
 
-    private boolean isCorrectTurn(final Square squareFrom){
+    private static boolean isCorrectTurn(final Square squareFrom){
         if(squareFrom.isEmpty()) return false;
         return squareFrom.getPiece().getColor().equals(getTurn());
     }

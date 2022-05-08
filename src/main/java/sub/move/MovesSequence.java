@@ -41,4 +41,10 @@ public class MovesSequence{
         getMovesSequence().remove(getMovesSequence().size() - 1);
     }
 
+    //
+
+    public static void print(){
+        System.out.println(getMovesSequence());
+    }
+
 }
