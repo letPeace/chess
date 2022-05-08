@@ -77,7 +77,7 @@ public class Move{
                     e.printStackTrace();
                 }
                 System.out.println(squareWithCapturedPawn);
-                Chessboard.getSquare(squareWithCapturedPawn).deletePiece();
+                Chessboard.getSquare(squareWithCapturedPawn).removePiece();
             }
             return true; // king is NOT placed in check after move => it is correct
         }
@@ -87,7 +87,7 @@ public class Move{
     private void replace(final Square squareFrom, final Square squareTo){
         MovesSequence.addMoveToSequence(squareFrom, squareTo);
         squareTo.setPiece(squareFrom.getPiece());
-        squareFrom.deletePiece();
+        squareFrom.removePiece();
     }
 
     public boolean moveBack(){

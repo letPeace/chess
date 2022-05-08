@@ -61,7 +61,7 @@ public class Square implements Cloneable{
         return getPiece() == null;
     }
 
-    public void deletePiece(){setPiece(null);}
+    public void removePiece(){setPiece(null);}
 
     //
 

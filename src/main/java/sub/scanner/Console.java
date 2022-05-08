@@ -15,7 +15,7 @@ public class Console{
     public static PieceName choicePieceName(){
         while(true){
             try{
-                String pieceName = Console.getInput().nextLine(); // trim ?
+                String pieceName = Console.getInput().nextLine().trim();
                 if(pieceName.equals(PieceName.ROOK.getName())) return PieceName.ROOK;
                 if(pieceName.equals(PieceName.KNIGHT.getName())) return PieceName.KNIGHT;
                 if(pieceName.equals(PieceName.BISHOP.getName())) return PieceName.BISHOP;
