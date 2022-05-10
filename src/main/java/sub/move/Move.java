@@ -8,6 +8,7 @@ import sub.enums.Color;
 import sub.enums.PieceName;
 import sub.enums.PieceSymbol;
 import sub.exceptions.MovesSequenceIsEmptyException;
+import sub.exceptions.SquareNullException;
 import sub.scanner.Console;
 
 public class Move{
@@ -33,27 +34,32 @@ public class Move{
 
     // move
 
-    public static boolean move(final Square squareFrom, final Square squareTo){
-        if(squareFrom == null || squareTo == null) return false; // it is checked for NULL here, so it is not necessary to do it again
+    public static boolean move(final Square squareFrom, final Square squareTo) throws SquareNullException{
+        if(squareFrom == null || squareTo == null) throw new SquareNullException("squareFrom || squareTo is NULL"); // return false
         boolean isMoveAvailable = Piece.isMoveCorrect(squareFrom, squareTo);
         boolean emptySquaresBetween = Chessboard.emptySquaresBetween(squareFrom, squareTo);
         boolean isCorrectTurn = isCorrectTurn(squareFrom);
-        if(isMoveAvailable && emptySquaresBetween && isCorrectTurn){ // if move is correct (excepting check)
-            boolean pawnCanCaptureInPassing = Pawn.canCaptureInPassing(squareFrom, squareTo);
+        if(isMoveAvailable && emptySquaresBetween && isCorrectTurn){
             Square squareCheck = squareFrom.clone();
-            if(!pawnCanCaptureInPassing && Pawn.reachesBackRank(squareFrom, squareTo)){ // check if pawn reaches back rank
+            if(Pawn.reachesBackRank(squareFrom, squareTo)){
                 PieceName pieceName = Console.choicePieceName();
                 Color pieceColor = squareFrom.getPiece().getColor();
                 PieceSymbol pieceSymbol = Piece.getSymbolByNameAndColor(pieceName, pieceColor);
                 replace(squareFrom, squareTo);
-                Square squareFromNew = squareTo.clone();
-                Piece newPiece = squareFromNew.getPiece();
-                newPiece.setName(pieceName);
-                newPiece.setSymbol(pieceSymbol);
-                squareCheck = squareFromNew.clone();
-                replace(squareFromNew, squareTo);
+                Square squareFromAfterPromoting = squareTo.clone();
+                squareFromAfterPromoting.setPiece(new Piece(pieceName, pieceColor, pieceSymbol));
+                squareCheck = squareFromAfterPromoting.clone();
+                replace(squareFromAfterPromoting, squareTo);
             } else{
-                squareCheck = squareFrom.clone();
+                if(Pawn.canCapturePawnWasInPassing(squareFrom, squareTo)){
+                    try{
+                        Square squareEmpty = MovesSequence.getLastMove().getSquareTo().clone();
+                        squareEmpty.removePiece();
+                        replace(squareEmpty, Chessboard.getSquare(squareEmpty));
+                    } catch(MovesSequenceIsEmptyException e){
+                        e.printStackTrace();
+                    }
+                }
                 replace(squareFrom, squareTo);
             }
             setOppositeTurn();
@@ -62,56 +68,50 @@ public class Move{
                 moveBack();
                 return false;
             }
-            if(pawnCanCaptureInPassing){
-                Square squareWithCapturedPawn = null;
-                try {
-                    squareWithCapturedPawn = MovesSequence.getMoveAtIndex(MovesSequence.size()-2).getSquareTo();
-                } catch (MovesSequenceIsEmptyException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(squareWithCapturedPawn);
-                Chessboard.getSquare(squareWithCapturedPawn).removePiece();
-            }
             return true; // king is NOT placed in check after move => it is correct
         }
         return false; // move is incorrect
     }
 
     private static void replace(final Square squareFrom, final Square squareTo){
-        MovesSequence.addMoveToSequence(squareFrom, squareTo);
+        MovesSequence.addMoveToSequence(squareFrom, squareTo); // square clones are added
         squareTo.setPiece(squareFrom.getPiece());
         squareFrom.removePiece();
     }
 
     public static boolean moveBack(){
         try{
-            if(Pawn.isPromoted()) MovesSequence.removeLastMove();
-            Square squareFromLast = MovesSequence.getLastMove().getSquareFrom();
-            Square squareToLast = MovesSequence.getLastMove().getSquareTo();
-            Square squareFrom = Chessboard.getSquare(squareFromLast.getPositionX(), squareFromLast.getPositionY());
-            Square squareTo = Chessboard.getSquare(squareToLast.getPositionX(), squareToLast.getPositionY());
-            squareFrom.setPiece(squareFromLast.getPiece());
-            squareTo.setPiece(squareToLast.getPiece());
-            MovesSequence.removeLastMove();
-            setOppositeTurn();
-            return true;
-        } catch(MovesSequenceIsEmptyException e){
-            System.out.println(e.getMessage());
-            return false;
+            if(Pawn.isPromoted()){
+                MovesSequence.removeLastMove();
+            }
+            if(Pawn.capturedInPassing()){
+                Square squareWithCapturedPawn = MovesSequence.getMoveAtIndex(MovesSequence.size()-2).getSquareTo();
+                Chessboard.getSquare(squareWithCapturedPawn).setPiece(squareWithCapturedPawn.getPiece());
+                MovesSequence.removeMoveAtIndex(MovesSequence.size()-2);
+            }
+        } catch(MovesSequenceIsEmptyException movesSequenceIsEmptyException){
+            //
+        } finally{
+            try{
+                Square squareFromLast = MovesSequence.getLastMove().getSquareFrom();
+                Square squareToLast = MovesSequence.getLastMove().getSquareTo();
+                Square squareFrom = Chessboard.getSquare(squareFromLast);
+                Square squareTo = Chessboard.getSquare(squareToLast);
+                squareFrom.setPiece(squareFromLast.getPiece());
+                squareTo.setPiece(squareToLast.getPiece());
+                MovesSequence.removeLastMove();
+                setOppositeTurn();
+            } catch(MovesSequenceIsEmptyException exception){
+                System.out.println(exception.getMessage());
+                return false;
+            }
         }
+        return true;
     }
 
     private static boolean isCorrectTurn(final Square squareFrom){
         if(squareFrom.isEmpty()) return false;
         return squareFrom.getPiece().getColor().equals(getTurn());
-    }
-
-    //
-
-    @Override
-    public String toString() {
-        return "squarePairArrayList{" + MovesSequence.getMovesSequence() +
-                '}';
     }
 
 }

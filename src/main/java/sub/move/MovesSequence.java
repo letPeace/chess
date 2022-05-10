@@ -7,7 +7,18 @@ import java.util.ArrayList;
 
 public class MovesSequence{
 
-    private static ArrayList<SquarePair> movesSequence = new ArrayList<>();
+    private static ArrayList<SquarePair> movesSequence = setMovesSequence();
+
+    // SET
+
+    public static ArrayList<SquarePair> setMovesSequence(){
+        movesSequence = new ArrayList<>();
+        return movesSequence;
+    }
+
+    public static void reset(){
+        setMovesSequence();
+    }
 
     // GET
 
@@ -15,7 +26,7 @@ public class MovesSequence{
         return movesSequence;
     }
 
-    public static SquarePair getMoveAtIndex(int index) throws MovesSequenceIsEmptyException {
+    public static SquarePair getMoveAtIndex(int index) throws MovesSequenceIsEmptyException{
         if(index < 0 || index >= getMovesSequence().size()) throw new MovesSequenceIsEmptyException("Sequence does not contain such index");
         return getMovesSequence().get(index);
     }
@@ -37,8 +48,13 @@ public class MovesSequence{
 
     // REMOVE
 
-    public static void removeLastMove(){
-        getMovesSequence().remove(getMovesSequence().size() - 1);
+    public static void removeLastMove() throws MovesSequenceIsEmptyException{
+        removeMoveAtIndex(getMovesSequence().size() - 1);
+    }
+
+    public static void removeMoveAtIndex(int moveIndex) throws MovesSequenceIsEmptyException{
+        if(moveIndex <0 || moveIndex >= getMovesSequence().size()) throw new MovesSequenceIsEmptyException("Invalid value of index.");
+        getMovesSequence().remove(moveIndex);
     }
 
     //

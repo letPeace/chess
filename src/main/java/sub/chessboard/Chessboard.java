@@ -3,6 +3,8 @@ package sub.chessboard;
 import sub.enums.Color;
 import sub.enums.PieceName;
 import sub.enums.PieceSymbol;
+import sub.move.Move;
+import sub.move.MovesSequence;
 import sub.pieces.Piece;
 
 import java.util.HashSet;
@@ -54,6 +56,12 @@ public class Chessboard{
             }
         }
         return squares;
+    }
+
+    public static void reset(){
+        setSquares();
+        MovesSequence.reset();
+        Move.setTurn(Color.WHITE);
     }
 
     // GET

@@ -1,6 +1,5 @@
 package sub.pieces;
 
-import sub.chessboard.Chessboard;
 import sub.chessboard.Square;
 import sub.enums.Color;
 import sub.enums.PieceName;
@@ -9,20 +8,75 @@ import sub.move.MovesSequence;
 
 public class Pawn extends Piece{
 
+    private static class PawnIsPassingInfo{
+        private Square squareFrom;
+        private Square squareTo;
+        private int directionFactor;
+        private boolean pawnWasInPassing;
+        private PawnIsPassingInfo(Square squareFrom, Square squareTo, int directionFactor, boolean pawnWasInPassing){
+            this.squareFrom = squareFrom;
+            this.squareTo = squareTo;
+            this.directionFactor = directionFactor;
+            this.pawnWasInPassing = pawnWasInPassing;
+        }
+        private PawnIsPassingInfo(boolean pawnWasInPassing){
+            this.pawnWasInPassing = pawnWasInPassing;
+        }
+        public Square getSquareFrom(){
+            return squareFrom;
+        }
+        public Square getSquareTo(){
+            return squareTo;
+        }
+        public int getDirectionFactor(){
+            return directionFactor;
+        }
+        public boolean getPawnWasInPassing(){
+            return pawnWasInPassing;
+        }
+    }
+
     public Pawn(){
         super(PieceName.PAWN);
     }
 
-    public static boolean canCaptureInPassing(final Square squareFrom, final Square squareTo){
+    public static boolean canCapturePawnWasInPassing(final Square squareFrom, final Square squareTo){
         try{
-            Square squareToLast = Chessboard.getSquare(MovesSequence.getLastMove().getSquareTo());
-            if(squareToLast.getPiece().getName() != PieceName.PAWN) return false;
-            Square squareFromLast = Chessboard.getSquare(MovesSequence.getLastMove().getSquareFrom());
+            PawnIsPassingInfo pawnIsPassingInfo = pawnWasInPassingOnMoveAtIndex(MovesSequence.size()-1);
+            if(!pawnIsPassingInfo.getPawnWasInPassing()) return false;
+            boolean correctFile = squareTo.getPositionX() == pawnIsPassingInfo.getSquareFrom().getPositionX();
+            boolean correctRank = squareTo.getPositionY() == pawnIsPassingInfo.getSquareFrom().getPositionY() + pawnIsPassingInfo.getDirectionFactor();
+            boolean isPawn = squareFrom.getPiece().getName() == PieceName.PAWN;
+            return correctFile && correctRank && isPawn;
+        } catch(MovesSequenceIsEmptyException e){
+            return false;
+        }
+    }
+
+    private static PawnIsPassingInfo pawnWasInPassingOnMoveAtIndex(int moveIndex) throws MovesSequenceIsEmptyException{
+        try{
+            Square squareFrom = MovesSequence.getMoveAtIndex(moveIndex).getSquareFrom();
+            Square squareTo = MovesSequence.getMoveAtIndex(moveIndex).getSquareTo();
+            if(squareFrom.getPiece().getName() != PieceName.PAWN) return new PawnIsPassingInfo(false);
             boolean pawnIsWhite = squareFrom.getPiece().getColor() == Color.WHITE;
-            int directionFactor = pawnIsWhite ? -1 : 1;
-            boolean oppositePawnPassed = squareToLast.getPositionY() - squareFromLast.getPositionY() == 2*directionFactor;
-            boolean pawnCanCapture = (squareTo.getPositionX() == squareFromLast.getPositionX()) && (squareTo.getPositionY() == squareFromLast.getPositionY() + directionFactor);
-            return oppositePawnPassed && pawnCanCapture;
+            int directionFactor = pawnIsWhite ? 1 : -1;
+            boolean pawnWasInPassing = squareTo.getPositionY() - squareFrom.getPositionY() == 2 * directionFactor;
+            return new PawnIsPassingInfo(squareFrom, squareTo, directionFactor, pawnWasInPassing);
+        } catch(MovesSequenceIsEmptyException | NullPointerException e){
+            throw new MovesSequenceIsEmptyException();
+        }
+    }
+
+    public static boolean capturedInPassing(){
+        try{
+            Square squareFrom = MovesSequence.getMoveAtIndex(MovesSequence.size()-2).getSquareFrom();
+            Square squareTo = MovesSequence.getMoveAtIndex(MovesSequence.size()-2).getSquareTo();
+            if(squareTo.isEmpty()) return false;
+            if(squareTo.getPiece().getName() != PieceName.PAWN) return false;
+            boolean samePositionX = squareTo.getPositionX() == squareFrom.getPositionX();
+            boolean samePositionY = squareTo.getPositionY() == squareFrom.getPositionY();
+            boolean correctRank = squareTo.getPositionY() == 5 || squareTo.getPositionY() == 4;
+            return samePositionX && samePositionY && correctRank;
         } catch(MovesSequenceIsEmptyException e){
             return false;
         }
@@ -32,7 +86,9 @@ public class Pawn extends Piece{
         try{
             Square squareFrom = MovesSequence.getLastMove().getSquareFrom();
             Square squareTo = MovesSequence.getLastMove().getSquareTo();
-            return squareFrom.getPositionX() == squareTo.getPositionX() && squareFrom.getPositionY() == squareTo.getPositionY(); // it must be enough
+            boolean samePosition = squareFrom.getPositionX() == squareTo.getPositionX() && squareFrom.getPositionY() == squareTo.getPositionY();
+            boolean correctRank = squareTo.getPositionY() == 8 || squareTo.getPositionY() == 1;
+            return samePosition && correctRank;
         } catch(MovesSequenceIsEmptyException e){
             return false;
         }

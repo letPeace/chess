@@ -103,7 +103,7 @@ public class Piece implements Cloneable{
             boolean blackPawnCanCapture = !pawnIsWhite && ((positionYTo - positionYFrom) == -1);
             boolean pawnCanCapture = (whitePawnCanCapture || blackPawnCanCapture) && (Math.abs(positionXFrom - positionXTo) == 1) && !squareTo.isEmpty();
             //
-            boolean pawnCanCaptureInPassing = Pawn.canCaptureInPassing(squareFrom, squareTo);
+            boolean pawnCanCaptureInPassing = Pawn.canCapturePawnWasInPassing(squareFrom, squareTo);
             //
             return pawnCanMoveForward || pawnCanCapture || pawnCanCaptureInPassing;
         } else if(pieceFromName == PieceName.ROOK){ // ROOK

@@ -90,7 +90,7 @@ public class Square implements Cloneable{
                 ", positionY=" + getPositionY() +
                 ", color=" + getColor() +
                 ", piece=" + getPiece() +
-                "}\n";
+                "}";
     }
 
 }

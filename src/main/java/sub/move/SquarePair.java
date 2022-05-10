@@ -34,10 +34,10 @@ public class SquarePair{
 
     @Override
     public String toString() {
-        return "SquarePair{\n" +
-                "squareFrom=" + getSquareFrom() +
-                "squareTo=" + getSquareTo() +
-                '}';
+        return "SquarePair{" +
+                "\nsquareFrom=" + getSquareFrom() +
+                "\nsquareTo=" + getSquareTo() +
+                "\n}";
     }
 
 }
