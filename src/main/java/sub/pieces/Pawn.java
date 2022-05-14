@@ -3,7 +3,7 @@ package sub.pieces;
 import sub.chessboard.Square;
 import sub.enums.Color;
 import sub.enums.PieceName;
-import sub.exceptions.MovesSequenceIsEmptyException;
+import sub.exceptions.MovesSequenceException;
 import sub.move.MovesSequence;
 
 public class Pawn extends Piece{
@@ -48,12 +48,12 @@ public class Pawn extends Piece{
             boolean correctRank = squareTo.getPositionY() == pawnIsPassingInfo.getSquareFrom().getPositionY() + pawnIsPassingInfo.getDirectionFactor();
             boolean isPawn = squareFrom.getPiece().getName() == PieceName.PAWN;
             return correctFile && correctRank && isPawn;
-        } catch(MovesSequenceIsEmptyException e){
+        } catch(MovesSequenceException e){
             return false;
         }
     }
 
-    private static PawnIsPassingInfo pawnWasInPassingOnMoveAtIndex(int moveIndex) throws MovesSequenceIsEmptyException{
+    private static PawnIsPassingInfo pawnWasInPassingOnMoveAtIndex(int moveIndex) throws MovesSequenceException{
         try{
             Square squareFrom = MovesSequence.getMoveAtIndex(moveIndex).getSquareFrom();
             Square squareTo = MovesSequence.getMoveAtIndex(moveIndex).getSquareTo();
@@ -62,8 +62,8 @@ public class Pawn extends Piece{
             int directionFactor = pawnIsWhite ? 1 : -1;
             boolean pawnWasInPassing = squareTo.getPositionY() - squareFrom.getPositionY() == 2 * directionFactor;
             return new PawnIsPassingInfo(squareFrom, squareTo, directionFactor, pawnWasInPassing);
-        } catch(MovesSequenceIsEmptyException | NullPointerException e){
-            throw new MovesSequenceIsEmptyException();
+        } catch(MovesSequenceException | NullPointerException e){
+            throw new MovesSequenceException();
         }
     }
 
@@ -77,7 +77,7 @@ public class Pawn extends Piece{
             boolean samePositionY = squareTo.getPositionY() == squareFrom.getPositionY();
             boolean correctRank = squareTo.getPositionY() == 5 || squareTo.getPositionY() == 4;
             return samePositionX && samePositionY && correctRank;
-        } catch(MovesSequenceIsEmptyException e){
+        } catch(MovesSequenceException e){
             return false;
         }
     }
@@ -89,7 +89,7 @@ public class Pawn extends Piece{
             boolean samePosition = squareFrom.getPositionX() == squareTo.getPositionX() && squareFrom.getPositionY() == squareTo.getPositionY();
             boolean correctRank = squareTo.getPositionY() == 8 || squareTo.getPositionY() == 1;
             return samePosition && correctRank;
-        } catch(MovesSequenceIsEmptyException e){
+        } catch(MovesSequenceException e){
             return false;
         }
     }

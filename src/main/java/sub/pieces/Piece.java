@@ -1,10 +1,13 @@
 package sub.pieces;
 
+import sub.chessboard.Chessboard;
 import sub.chessboard.Square;
 import sub.enums.Color;
 import sub.enums.PieceName;
 import sub.enums.PieceSymbol;
+import sub.exceptions.SquareException;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Piece implements Cloneable{
@@ -75,6 +78,27 @@ public class Piece implements Cloneable{
     }
 
     //
+
+    public static boolean threatens(final Square squareThreatening, final Square square) throws SquareException{
+        // does squareThreatening threaten square
+        return isMoveCorrect(squareThreatening, square) && Chessboard.emptySquaresBetween(squareThreatening, square);
+    }
+
+    public static ArrayList<Square> isThreatened(final Square square) throws SquareException{
+        // is square threatened
+        ArrayList<Square> squaresThreatening = new ArrayList<>();
+        Color pieceColor = square.getPiece().getColor();
+        for(int i=1; i<=8; i++){ // it might be optimized
+            for(int j=1; j<=8; j++){
+                Square squareThreatening = Chessboard.getSquare(j, i);
+                Piece pieceChecking = squareThreatening.getPiece();
+                if(squareThreatening.isEmpty() || pieceColor == pieceChecking.getColor()) continue;
+                // is square threatened by squareThreatening
+                if(threatens(squareThreatening, square)) squaresThreatening.add(squareThreatening);
+            }
+        }
+        return squaresThreatening;
+    }
 
     public static boolean isMoveCorrect(final Square squareFrom, final Square squareTo){
         Piece pieceFrom = squareFrom.getPiece();

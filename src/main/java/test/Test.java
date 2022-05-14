@@ -2,7 +2,7 @@ package test;
 
 import sub.chessboard.Chessboard;
 import sub.chessboard.Square;
-import sub.exceptions.SquareNullException;
+import sub.exceptions.SquareException;
 import sub.exceptions.TestFailException;
 import sub.move.Move;
 
@@ -22,7 +22,7 @@ public class Test{
     }
 
     public static void testAll(){
-        String[] testArguments = new String[]{"pawn","rook","knight","bishop","queen","king","check","promoting","capture"};
+        String[] testArguments = new String[]{"pawn","rook","knight","bishop","queen","king","check","checkmate","promoting","capture"};
         for(String argument : testArguments) {
             try{
                 Test.test(argument);
@@ -35,7 +35,7 @@ public class Test{
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.out.println("Lack of Integers: " + e.getMessage());
                 return;
-            } catch (SquareNullException e) {
+            } catch (SquareException e) {
                 System.out.println("Chessboard error: " + e.getMessage());
                 return;
             } finally{
@@ -45,7 +45,7 @@ public class Test{
         }
     }
 
-    public static boolean test(String testObject) throws NullPointerException, NumberFormatException, ArrayIndexOutOfBoundsException, SquareNullException{
+    public static boolean test(String testObject) throws NullPointerException, NumberFormatException, ArrayIndexOutOfBoundsException, SquareException{
         // Structure: [xFrom yFrom]+[xTo yTo]+[expected result]+[do not change turn]
         try{
             if(testObject.equals("pawn")){
@@ -76,6 +76,8 @@ public class Test{
                 Collections.addAll(getMoveSequence(),"32 34 1","47 45 1","34 45 1","38 47 1","45 46 1 1","46 37 1 1","37 38 1");
             } else if(testObject.equals("capture")){
                 Collections.addAll(getMoveSequence(),"32 34 1 1","34 35 1","27 25 1","35 26 1");
+            } else if(testObject.equals("checkmate")){
+                Collections.addAll(getMoveSequence(),"52 54 1","67 65 1 1","77 75 1","41 85 1");
             } else{ // заглушка
                 return true;
             }
@@ -85,7 +87,7 @@ public class Test{
         return justDoIt();
     }
 
-    private static boolean justDoIt() throws NullPointerException, NumberFormatException, ArrayIndexOutOfBoundsException, SquareNullException{
+    private static boolean justDoIt() throws NullPointerException, NumberFormatException, ArrayIndexOutOfBoundsException, SquareException{
         for(String moveData : getMoveSequence()){
             try {
                 String[] moveDataArray = moveData.split(" ");
@@ -112,8 +114,8 @@ public class Test{
                 throw new NumberFormatException("{"+moveData+"}");
             } catch(ArrayIndexOutOfBoundsException e){
                 throw new ArrayIndexOutOfBoundsException("{"+moveData+"}");
-            } catch(SquareNullException e){
-                throw new SquareNullException("{"+e.getMessage()+"}");
+            } catch(SquareException e){
+                throw new SquareException("{"+e.getMessage()+"}");
             }
         }
         return true;

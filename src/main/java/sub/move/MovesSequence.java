@@ -1,7 +1,7 @@
 package sub.move;
 
 import sub.chessboard.Square;
-import sub.exceptions.MovesSequenceIsEmptyException;
+import sub.exceptions.MovesSequenceException;
 
 import java.util.ArrayList;
 
@@ -26,13 +26,13 @@ public class MovesSequence{
         return movesSequence;
     }
 
-    public static SquarePair getMoveAtIndex(int index) throws MovesSequenceIsEmptyException{
-        if(index < 0 || index >= getMovesSequence().size()) throw new MovesSequenceIsEmptyException("Sequence does not contain such index");
+    public static SquarePair getMoveAtIndex(int index) throws MovesSequenceException {
+        if(index < 0 || index >= getMovesSequence().size()) throw new MovesSequenceException("Sequence does not contain such index");
         return getMovesSequence().get(index);
     }
 
-    public static SquarePair getLastMove() throws MovesSequenceIsEmptyException{
-        if(getMovesSequence().isEmpty()) throw new MovesSequenceIsEmptyException("Last move does not exist");
+    public static SquarePair getLastMove() throws MovesSequenceException{
+        if(getMovesSequence().isEmpty()) throw new MovesSequenceException("Last move does not exist");
         return getMovesSequence().get(getMovesSequence().size()-1);
     }
 
@@ -48,12 +48,12 @@ public class MovesSequence{
 
     // REMOVE
 
-    public static void removeLastMove() throws MovesSequenceIsEmptyException{
+    public static void removeLastMove() throws MovesSequenceException{
         removeMoveAtIndex(getMovesSequence().size() - 1);
     }
 
-    public static void removeMoveAtIndex(int moveIndex) throws MovesSequenceIsEmptyException{
-        if(moveIndex <0 || moveIndex >= getMovesSequence().size()) throw new MovesSequenceIsEmptyException("Invalid value of index.");
+    public static void removeMoveAtIndex(int moveIndex) throws MovesSequenceException{
+        if(moveIndex <0 || moveIndex >= getMovesSequence().size()) throw new MovesSequenceException("Invalid value of index = "+moveIndex+".");
         getMovesSequence().remove(moveIndex);
     }
 

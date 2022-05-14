@@ -2,8 +2,9 @@ package chess;
 
 import sub.chessboard.Chessboard;
 import sub.chessboard.Square;
-import sub.exceptions.MovesSequenceIsEmptyException;
-import sub.exceptions.SquareNullException;
+import sub.exceptions.MovesSequenceException;
+import sub.exceptions.SquareException;
+import sub.move.Checkmate;
 import sub.move.Move;
 import sub.move.MovesSequence;
 import sub.scanner.Console;
@@ -50,9 +51,10 @@ public class Chess{
                 boolean isMoveSuccessful = Move.move(squareFrom, squareTo);
                 System.out.println("["+xFrom+","+yFrom+"] -> ["+xTo+","+yTo+"] = "+isMoveSuccessful);
                 Chessboard.print();
-            } catch(MovesSequenceIsEmptyException e){
+                if(Checkmate.getCheckmate()) break;
+            } catch(MovesSequenceException e){
                 System.out.println(e.getMessage());
-            } catch(SquareNullException e){
+            } catch(SquareException e){
                 System.out.println("Chessboard error: "+e.getMessage());
                 return;
             }
